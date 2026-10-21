@@ -1,0 +1,22 @@
+name: Public table hash
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  hash:
+    if: github.event.repository.private == false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Stream one pinned table range
+        env:
+          GITHUB_REPOSITORY_VISIBILITY: ${{ github.event.repository.visibility }}
+        run: python verify_remote_table_hash.py
+      # No artifacts, caches, model files, HF token, or paid runners.
