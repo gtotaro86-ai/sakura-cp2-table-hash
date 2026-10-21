@@ -248,6 +248,22 @@ Use the included runtime. Stock llama.cpp, LM Studio, Ollama and unrelated forks
 
 Previously reported Sakura Q2, ISTA Compact or Gyro scores are **not** results for this package. Model-file integrity after the server-side copy is checked against HF LFS hash and size metadata.
 
+## Hardware compatibility
+
+The supplied binaries are the same Windows x64 Vulkan CP2 runtime as [Sakura K512 CP2](https://huggingface.co/{DONOR}). Vulkan support in a GPU driver alone does not establish compatibility. **This exact Unsloth + CP2 weight combination has not been loaded.** No speed, fit or quality number from K512, ISTA Compact or Gyro is a result for this package.
+
+| Hardware / platform | Status | What to expect |
+|---|---|---|
+| AMD Strix Halo, Radeon 8060S, 64 GB UMA, Windows x64 | Runtime tested on the K512 CP2 package only | Same supplied runtime. This Unsloth package is larger ({gib:.1f} GiB of model files) and has not been loaded here. |
+| Other Strix Halo configurations | Not tested | Similar hardware is not a separate validation. |
+| Other AMD, NVIDIA or Intel GPUs | Not tested | No CUDA build is supplied. No hardware-specific profile has been qualified. |
+| GPUs with 24 or 32 GB dedicated VRAM | Default profile not validated | Disk size is not running memory. A smaller card may need different offloading; such profiles have not been tested. |
+| CPU-only, Linux, macOS, Windows on ARM | No matching native binary supplied | This package contains Windows x64 binaries. |
+
+Storage: allow at least the model files plus the runtime. An SSD is recommended for the lazily read table.
+
+[简体中文](README_zh.md)
+
 ## Provenance and license
 
 Base: [Qwen/Qwen3.8-Flash-Next](https://huggingface.co/Qwen/Qwen3.8-Flash-Next). Direct backbone: [unsloth/Qwen3.8-Flash-Next-GGUF](https://huggingface.co/unsloth/Qwen3.8-Flash-Next-GGUF), revision `{REVISION}`. Existing CP2 table and matching runtime: [Sakura K512 CP2](https://huggingface.co/{DONOR}), revision `{DONOR_REV}`.
@@ -255,6 +271,38 @@ Base: [Qwen/Qwen3.8-Flash-Next](https://huggingface.co/Qwen/Qwen3.8-Flash-Next).
 Credit for the Unsloth quantization belongs to Unsloth and its contributors; credit for Qwen belongs to Qwen. Sakura supplies the experimental lookup-table representation and this repack. This release claims no authorship of the backbone, no retraining and no endorsement by those projects.
 
 Model weights retain **Qwen Community License 1.0**, included in `LICENSE` and `LICENSE-QWEN`. Read its complete conditions before use. Runtime software has its separate notices under `runtime/`; software licensing does not relicense model weights.
+"""
+
+
+def readme_zh(variant, spec):
+    gib = spec["total_bytes"] / (1024 ** 3)
+    repo = repo_for(variant)
+    return f"""[English](README.md) | 简体中文 | Sakura = 樱花 (yīnghuā)
+
+# Sakura — Qwen3.8-Flash-Next Compact {variant} CP2
+
+这是 **Unsloth {variant}** 的实验性社区重打包,保留全部 **512** 个路由专家。分片 1 和 3 原样复制。分片 2 保留表以外的全部张量,只把 `per_layer_token_embd.weight` 换成已有的 Sakura CP2 表。
+
+**这个 {variant} + CP2 组合没有做过推理加载,也没有生成、困惑度、质量或速度测试。** 这是结构发布,不是质量或硬件认证。
+
+三个模型文件合计 **{gib:.3f} GiB**。文件大小不是运行内存。32 GB 或 24 GB 显卡不能从文件大小推断为可以运行。
+
+```text
+hf download {repo} --local-dir Sakura-{variant}-CP2
+```
+
+三个编号 GGUF、`START.cmd` 和完整 `runtime` 目录必须放在一起。运行 `START.cmd`,然后打开 **http://127.0.0.1:{spec['port']}**。别名 `{spec['alias']}`。请使用附带的 Windows x64 Vulkan CP2 运行时。普通 llama.cpp、LM Studio 和 Ollama 未针对这个自定义 CP2 表验证。
+
+## 硬件兼容性
+
+附带的二进制文件与 [Sakura K512 CP2](https://huggingface.co/{DONOR}) 相同。仅有 Vulkan 驱动并不等于兼容。**这个 Unsloth + CP2 权重组合尚未加载。** K512、ISTA Compact 或 Gyro 的速度和适配数字不是本包的结果。
+
+| 硬件 / 平台 | 状态 | 预期 |
+|---|---|---|
+| AMD Strix Halo, Radeon 8060S, 64 GB UMA, Windows x64 | 仅 K512 CP2 包测试过该运行时 | 运行时相同。本包更大({gib:.1f} GiB),尚未在此加载。 |
+| 其他显卡、仅 CPU、Linux、macOS、ARM 版 Windows | 未测试或没有对应的本机二进制 | 本包只含 Windows x64 二进制。 |
+
+骨干:[unsloth/Qwen3.8-Flash-Next-GGUF](https://huggingface.co/unsloth/Qwen3.8-Flash-Next-GGUF),修订 `{REVISION}`。权重保留 Qwen Community License 1.0。
 """
 
 
@@ -355,6 +403,7 @@ def main():
             ))
     docs = {
         "README.md": readme(variant, spec).encode("utf8"),
+        "README_zh.md": readme_zh(variant, spec).encode("utf8"),
         "START.cmd": starter(variant, spec).replace("\n", "\r\n").encode("utf8"),
         "results.json": json.dumps({
             "variant": variant,
