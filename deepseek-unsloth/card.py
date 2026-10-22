@@ -31,7 +31,7 @@ tags:
 
 本仓库保留 Unsloth `{quant}` 的四个模型主体分片，逐字节不变；只将 Engram 查找表替换为 Q3_K。这里的 Q3_K **仅指 Engram 表**，并不表示整个模型都是 3 位。
 
-原始模型为 [DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017)，修订版本 `1bae0e1088993b9b82de08f59de5be5a34e42170`。模型主体直接来自 [{plan['upstream_repo']}](https://huggingface.co/{plan['upstream_repo']})，固定修订版本 `{plan['upstream_revision']}`。
+原始模型为 [DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017)，修订版本 `1bae0e1088993b9b82de08f59de5be5f34e42170`。模型主体直接来自 [{plan['upstream_repo']}](https://huggingface.co/{plan['upstream_repo']})，固定修订版本 `{plan['upstream_revision']}`。
 
 Engram 表来自已完成的 [Sakura Maya-S Q3_K 版本](https://huggingface.co/{plan['q3_source_repo']})，修订版本 `{plan['q3_source_revision']}`。该表由 peasantsmith 的 Maya-S Q6_K 表重新量化为 Q3_K，Maya 输入修订版本为 `b9e25f34b53806b24e5b18085de6ed5967ad9ed5`。本次构建将两层已有 Q3_K 数据按层 1、层 14 的顺序拼接，并生成 Unsloth 所需的单一 GGUF 张量；没有再次量化 Q3_K 数据，也没有从 IQ4_NL 表再次量化。
 
@@ -58,7 +58,7 @@ Engram 表来自已完成的 [Sakura Maya-S Q3_K 版本](https://huggingface.co/
 
 ## 验证与限制
 
-已检查：固定输入的文件大小与 SHA-256；两个来源中 192 行 Q6_K 真实样本逐字节相同；Unsloth 的层顺序、48 个哈希桶大小与偏移及哈希乘数；隔离的原生 CPU Q3_K 行读取路径，对 192 行真实样本、两层边界、最后一行和 64 位文件偏移进行了位精确比较；实际 HF 文件对象的哈希、多段上传、回绕读取以及损坏源拒绝测试。完整重打包还验证了两个 Q3_K 源文件的完整 SHA-256，以及发布后的五个分片大小和 SHA-256。
+已检查：固定输入的文件大小与 SHA-256；两个来源中 192 行 Q6_K 真实样本逐字节相同；Unsloth 的层顺序、48 个哈希桶大小与偏移及哈希乘数；隔离的原生 CPU Q3_K 行读取路径，对 192 行真实样本、两层边界、最后一行和 64 位文件偏移进行了位精确比较；实际 HF 文件对象的哈希、多段上传、回绕读取以及损坏源拒绝测试。原生 Xet 流式上传会在发布文件引用之前验证两个 Q3_K 源文件的完整 SHA-256，以及发布后的五个分片大小和 SHA-256。
 
 **未进行完整模型推理测试。** 未进行本版本的困惑度、任务质量、GPU 运行或 Windows/AMD 测试。小样本行误差不能当作模型质量。改变 Engram 精度后，上游 Unsloth 或 Maya 的质量分数不能直接沿用。
 
@@ -70,7 +70,7 @@ Engram 表来自已完成的 [Sakura Maya-S Q3_K 版本](https://huggingface.co/
 
 ## Provenance and exact changes
 
-- Original model: [deepseek-ai/DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017), revision `1bae0e1088993b9b82de08f59de5be5a34e42170`.
+- Original model: [deepseek-ai/DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017), revision `1bae0e1088993b9b82de08f59de5be5f34e42170`.
 - Direct backbone source: [{plan['upstream_repo']}](https://huggingface.co/{plan['upstream_repo']}), revision `{plan['upstream_revision']}`, variant `{quant}`. All four backbone files, including the metadata shard, are copied server-side with identical sizes and SHA-256 hashes.
 - Table source: [{plan['q3_source_repo']}](https://huggingface.co/{plan['q3_source_repo']}), revision `{plan['q3_source_revision']}`. Its existing Q3_K payloads were originally quantized from [peasantsmith's Maya-S Q6_K tables](https://huggingface.co/peasantsmith/DeepSeek-V4.1-Flash-1017-Maya-GGUF) at `b9e25f34b53806b24e5b18085de6ed5967ad9ed5`, using GGML `{plan['reference_ggml_revision']}`.
 - This build **repacks the existing Q3_K payloads without changing their bits**, in layer 1 then layer 14 order, into Unsloth's combined `per_layer_token_embd.weight`. It does not requantize the upstream IQ4_NL table or quantize the backbone again.
@@ -125,8 +125,8 @@ The upstream [Unsloth guide](https://unsloth.ai/docs/models/deepseek-v4.1-flash)
 - 192 real Q6_K sample rows matched byte-for-byte between Maya and Unsloth, across the beginning, middle and end of both layers. This sample comparison alone does not establish full source-payload identity.
 - Layer order, all 48 bucket sizes/absolute offsets, and hash multipliers match the pinned converter and Unsloth metadata.
 - Isolated native host-gather tests returned bit-identical decoded values for 192 real Q3_K rows, including layer boundaries, final rows, reversed gathers and 64-bit byte offsets.
-- The seekable stream passed real HF 2.2.0 hashing/multipart/rewind tests with simulated transport, plus corrupt-source and short-source rejection checks.
-- The full cloud repack checked both complete source Q3_K file hashes before upload. All five published file sizes and SHA-256 hashes were checked after finalization.
+- The seekable stream passed real HF 2.2.0 hashing/multipart/rewind tests with simulated transport. The native hf-xet 1.7.0 streaming path passed actual local-CAS checks, corruption/length rejection tests, and a small real cloud upload/download check before reading the full table.
+- Native Xet streaming checked both complete source Q3_K file hashes and the independently recorded combined SHA-256 before publishing the file reference. All five published file sizes and SHA-256 hashes were checked after finalization.
 
 **No full inference test has been performed.** No model-level perplexity, coding, answer-quality, GPU or Windows/AMD test is reported for this release. Sample row error is not model quality. Upstream Unsloth/Maya scores cannot be transferred to the changed Engram table.
 

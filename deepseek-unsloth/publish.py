@@ -1,5 +1,5 @@
 """Authorized free public Actions repack + two releases; never full-read in Work."""
-import hashlib,json,os,time,urllib.request
+import hashlib,io,json,os,random,time,urllib.request
 from pathlib import Path
 from assembly import Assembly,BufferedAssembly
 from ranges import fetch_range
@@ -43,13 +43,30 @@ def initialize(api,repo,identity):
  except RepositoryNotFoundError:api.create_repo(repo_id=repo,repo_type='model',private=False,exist_ok=False)
  api.create_commit(repo_id=repo,operations=[CommitOperationAdd(path_in_repo=MARKER,path_or_fileobj=(json.dumps(identity,indent=2)+'\n').encode()),CommitOperationAdd(path_in_repo='README.md',path_or_fileobj=b'---\nlicense: mit\n---\n# Sakura DeepSeek Unsloth Engram Q3_K\n\nBuild in progress. Incomplete; do not download yet.\n')],commit_message='Initialize authorized cloud repack; incomplete until finalization')
 
+def probe_xet_upload(api,repo):
+ from xet_stream import upload_operation
+ from huggingface_hub import CommitOperationAdd,CommitOperationDelete
+ # Synthetic transport probe, not model data; exercise the real CAS and Hub commit first.
+ data=random.Random(1017).randbytes(1024*1024);digest=hashlib.sha256(data).hexdigest()
+ path='build/xet-stream-probe.bin'
+ operation=upload_operation(api,repo,path,io.BytesIO(data),len(data),digest)
+ commit=api.create_commit(repo_id=repo,operations=[operation],commit_message='Check native Xet streaming transport before full table read')
+ verify(api,repo,[{'path':path,'size':len(data),'sha256':digest}])
+ actual=fetch_range(f'https://huggingface.co/{repo}/resolve/{commit.oid}/{path}',0,len(data),len(data),HERE/'transport-probe-budget.json',2*1024*1024)
+ if actual!=data:raise RuntimeError('Native Xet remote round-trip mismatch')
+ proof={'native_xet_stream_upload_and_exact_download_verified':True,'synthetic_bytes':len(data),'sha256':digest,'model_data':False}
+ api.create_commit(repo_id=repo,operations=[CommitOperationDelete(path_in_repo=path),CommitOperationAdd(path_in_repo='xet-transport-check.json',path_or_fileobj=(json.dumps(proof,indent=2)+'\n').encode())],commit_message='Record successful native Xet transport check; remove synthetic probe')
+ print(json.dumps(proof),flush=True)
+
 def build_table(api,plan,identity):
  from huggingface_hub import CommitOperationAdd
+ from xet_stream import upload_operation
  first=plan['variants'][0];repo=first['repo'];info=api.model_info(repo)
  if 'table-build.json' in {x.rfilename for x in info.siblings or []}:
   record=small(repo,info.sha,'table-build.json')
   if record['identity']!=identity:raise RuntimeError('Saved table identity mismatch')
   verify(api,repo,[{'path':first['table_path'],'size':record['size'],'sha256':record['sha256']}]);return record
+ probe_xet_upload(api,repo)
  source_files=[{'path':p['path'],'size':p['size'],'sha256':p['sha256']} for p in plan['q3_parts']]
  verify(api,plan['q3_source_repo'],source_files)
  journal=HERE/'source-budget.json';limit=3*sum(p['size'] for p in plan['q3_parts'])
@@ -59,17 +76,20 @@ def build_table(api,plan,identity):
  for i,p in enumerate(plan['q3_parts']):
   if source(i,0,192)!=bytes.fromhex(p['header_hex']):raise RuntimeError('Pinned Q3 source header mismatch')
  raw=Assembly(bytes.fromhex(plan['combined_header_hex']),plan['q3_parts'],source)
- tick=time.perf_counter();print('Hashing existing Q3 payloads into the combined Unsloth table; bounded RAM only',flush=True)
+ expected=json.loads((HERE/'evidence/combined-table-hash.json').read_text())
+ if expected['plan_sha256']!=identity['plan_sha256'] or expected['bytes']!=raw.size:raise RuntimeError('Independent full hash refers to another plan')
+ tick=time.perf_counter();print('Native Xet streaming combined Q3 table; one bounded data pass, no full disk file',flush=True)
  with BufferedAssembly(raw) as stream:
-  operation=CommitOperationAdd(path_in_repo=first['table_path'],path_or_fileobj=stream)
-  if min(raw.verified_passes)<1:raise RuntimeError('Both full source SHA256 checks must pass before upload')
+  def validate_source():
+   if min(raw.verified_passes)<1:raise RuntimeError('Both full source SHA256 checks must pass before publication')
+  operation=upload_operation(api,repo,first['table_path'],stream,raw.size,expected['sha256'],validate_source)
   digest=operation.upload_info.sha256.hex();size=operation.upload_info.size
   if size!=plan['combined_table_bytes']:raise RuntimeError('Combined size mismatch')
-  print(json.dumps({'hash_pass_complete':True,'bytes':size,'sha256':digest,'elapsed_seconds':time.perf_counter()-tick}),flush=True)
+  print(json.dumps({'hash_and_native_upload_complete':True,'bytes':size,'sha256':digest,'elapsed_seconds':time.perf_counter()-tick}),flush=True)
   api.create_commit(repo_id=repo,operations=[operation],commit_message='Add shared combined Q3_K Engram table; backbone unchanged')
   verify(api,repo,[{'path':first['table_path'],'size':size,'sha256':digest}])
   passes=raw.verified_passes.copy()
- record={'identity':identity,'size':size,'sha256':digest,'source_full_sha256_verified_passes':passes,'source_budget':json.loads(journal.read_text()),'elapsed_seconds':time.perf_counter()-tick,'full_inference_test_performed':False}
+ record={'identity':identity,'size':size,'sha256':digest,'source_full_sha256_verified_passes':passes,'source_budget':json.loads(journal.read_text()),'elapsed_seconds':time.perf_counter()-tick,'upload_backend':'native hf-xet 1.7.0 incremental stream; size and SHA256 checked before Hub publication','full_inference_test_performed':False}
  safe_public(json.dumps(record))
  api.create_commit(repo_id=repo,operations=[CommitOperationAdd(path_in_repo='table-build.json',path_or_fileobj=(json.dumps(record,indent=2)+'\n').encode())],commit_message='Record full source and uploaded table SHA256 verification')
  return record

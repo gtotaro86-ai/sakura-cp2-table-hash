@@ -1,0 +1,6 @@
+{
+  "plan_sha256": "283023a9a2a86f5dd0335a32baef238c77e98bb22727281d72f45e84492e5ec2",
+  "bytes": 84482513692,
+  "sha256": "3c8678a1ae3c25543a8e4ef7f2b157bfbca20cad7f0e52c5c0830a7f0b211037",
+  "provenance": "Complete source SHA256 and combined hash pass on free public CPU runner, 2026-10-22, 1803.420028815 seconds; the subsequent legacy LFS upload was rejected before transfer. No inference test."
+}
