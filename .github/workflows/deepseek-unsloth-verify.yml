@@ -1,0 +1,33 @@
+name: Independently verify both DeepSeek Unsloth releases
+on:
+  workflow_run:
+    workflows: ['Assemble DeepSeek Unsloth IQ1 S and M with shared Q3 Engram']
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    if: github.event.repository.private == false && (github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: deepseek-unsloth
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify the small independent-check sources
+        run: sha256sum -c VERIFY_SHA256SUMS
+      - run: python -m pip install PyYAML==6.0.3
+      - name: Check verifier failure cases without network
+        run: python test_verify_release.py
+      - name: Verify published hashes, actual table headers and 192 real rows per variant
+        run: python -u verify_release.py --read-public-output-samples
+      # Read only. No HF token, uploads, model cache, artifacts, paid runner or GPU.
+      # All model samples together are bounded to 1 MB; expected output reads: 42,624 bytes.
