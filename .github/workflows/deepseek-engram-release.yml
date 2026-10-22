@@ -145,6 +145,9 @@ jobs:
           python-version: '3.12'
       - run: python release/verify_package.py
       - run: python -m pip install numpy==2.3.5 huggingface-hub==2.2.0
+      - name: Use the current validated Sakura model card
+        working-directory: .
+        run: cp deepseek-engram/MODEL_CARD.md _deepseek_build/sakura-engram/release/MODEL_CARD_DRAFT.md
       - name: Verify tables, server-copy untouched backbone, publish manifest and short notice
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
