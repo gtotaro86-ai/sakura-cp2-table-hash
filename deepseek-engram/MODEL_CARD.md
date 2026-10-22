@@ -14,172 +14,170 @@ tags:
 
 # Sakura DeepSeek V4.1 Flash 1017 — Engram Q3_K
 
-**Maya-S mit kleineren Engram-Tabellen: 262,68 GB statt 339,48 GB.** Die beiden N-Gram-/Engram-Tabellen wurden von **Q6_K nach Q3_K** umgerechnet. Die vier Dateien des Modellrumpfs wurden unverändert aus Maya-S übernommen.
+**Maya-S with smaller Engram tables: 262.68 GB instead of 339.48 GB.** Both N-gram/Engram tables have been requantized from **Q6_K to Q3_K**. The four backbone files are copied unchanged from Maya-S.
 
-| Ergebnis | Wert |
+| Result | Value |
 | --- | ---: |
-| Vollständiger GGUF-Hauptmodellsatz | **262,676 GB / 244,636 GiB** |
-| Ersparnis gegenüber Maya-S | **76,802 GB / 22,62 %** |
-| Engram-Tabellenpayload | **84,483 GB statt 161,285 GB** |
-| Ersparnis bei den Tabellen | **47,62 %** |
-| Vollständiger Cloud-Bau einschließlich Veröffentlichung | **1 h 27 min 29 s** |
+| Complete main-model GGUF set | **262.676 GB / 244.636 GiB** |
+| Reduction versus Maya-S | **76.802 GB / 22.62%** |
+| Engram table payload | **84.483 GB instead of 161.285 GB** |
+| Table payload reduction | **47.62%** |
+| Complete cloud build, including publication | **1 h 27 min 29 s** |
 
-**Es wurde kein vollständiger Inferenztest durchgeführt.**
+**No full inference test has been performed.**
 
-## Herkunft und genaue Quantisierungsquelle
+## Provenance and exact quantization source
 
-| Stufe | Modell / Repository | Rolle |
+| Stage | Model / repository | Role |
 | --- | --- | --- |
-| Ursprüngliches Modell | [deepseek-ai/DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017) | DeepSeek-Checkpoint und Architektur |
-| Direkte Eingabe dieses Builds | [peasantsmith/DeepSeek-V4.1-Flash-1017-Maya-GGUF](https://huggingface.co/peasantsmith/DeepSeek-V4.1-Flash-1017-Maya-GGUF), Ordner **Maya-S** | Bereits quantisierter Modellrumpf und zwei Q6_K-Engram-Tabellen |
-| Dieses Repository | **webmp3/Sakura-DeepSeek-V4.1-Flash-1017-Engram-Q3_K-GGUF** | Unveränderter Maya-S-Rumpf plus neu kodierte Q3_K-Tabellen |
+| Original model | [deepseek-ai/DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017) | DeepSeek checkpoint and architecture |
+| Direct input to this build | [peasantsmith/DeepSeek-V4.1-Flash-1017-Maya-GGUF](https://huggingface.co/peasantsmith/DeepSeek-V4.1-Flash-1017-Maya-GGUF), **Maya-S** folder | Previously quantized backbone and two Q6_K Engram tables |
+| This repository | **webmp3/Sakura-DeepSeek-V4.1-Flash-1017-Engram-Q3_K-GGUF** | Unchanged Maya-S backbone with newly encoded Q3_K tables |
 
-Die direkte Eingabe für die Tabellenquantisierung waren **Shards 5 und 6 von Maya-S**, gepinnt auf Revision `b9e25f34b53806b24e5b18085de6ed5967ad9ed5`. Jede Q6_K-Zeile wurde zu Float32 dequantisiert und anschließend mit dem ggml-Q3_K-Quantizer neu kodiert. Es handelt sich um eine **Requantisierung der vorhandenen Q6_K-Tabellen**; die Tabellen wurden für diesen Sakura-Build nicht erneut aus DeepSeeks FP8-Originalgewichten erzeugt.
+The direct inputs to table quantization were **Maya-S shards 5 and 6**, pinned to revision `b9e25f34b53806b24e5b18085de6ed5967ad9ed5`. Each Q6_K row was dequantized to Float32 and then encoded with the ggml Q3_K quantizer. This is a **requantization of the existing Q6_K tables**. The Sakura build did not regenerate the tables from DeepSeek's original FP8 weights.
 
-Die ersten vier Maya-S-Shards wurden serverseitig übernommen. Ihre Größen und LFS-SHA256 stimmen mit der gepinnten Quelle überein. Es wurden keine Experten entfernt und keine Rumpfgewichte neu quantisiert.
+The first four Maya-S shards were copied server-side. Their sizes and LFS SHA256 values match the pinned source. No experts were removed, and no backbone weights were requantized.
 
-## Vergleich: DeepSeek-Original, Maya-S und Sakura
+## Comparison: original DeepSeek, Maya-S and Sakura
 
-| Merkmal | DeepSeek-Original | Maya-S von peasantsmith | Sakura Engram Q3_K |
+| Feature | Original DeepSeek | Maya-S by peasantsmith | Sakura Engram Q3_K |
 | --- | --- | --- | --- |
-| Dateiformat | Safetensors | GGUF | GGUF |
-| Expertengewichte | FP4 laut Originalkonfiguration | Gemischte IQ2-/IQ3-Formate | Unverändert aus Maya-S |
-| Dense-/Attention-Gewichte | FP8 und weitere Originaltypen | Überwiegend Q8_0; weitere Typen bleiben erhalten | Unverändert aus Maya-S |
-| Engram-Tabellen | FP8 | Q6_K | **Q3_K** |
-| Anzahl der Engram-Zeilen | 768.022.850 | 768.022.850 | **768.022.850** |
-| Große Engram-Tabellen verändert | Referenz | Von peasantsmith quantisiert | **Nur diese beiden Tabellen neu kodiert** |
-| Runtime-Bezug | DeepSeek-Referenz / passende Frameworks | Project Maya | **Project Maya mit mitgeliefertem Q3_K-Engram-Patch** |
+| File format | Safetensors | GGUF | GGUF |
+| Expert weights | FP4 according to the original configuration | Mixed IQ2/IQ3 formats | Unchanged from Maya-S |
+| Dense/attention weights | FP8 and other original types | Primarily Q8_0, with other types retained | Unchanged from Maya-S |
+| Engram tables | FP8 | Q6_K | **Q3_K** |
+| Number of Engram rows | 768,022,850 | 768,022,850 | **768,022,850** |
+| Large Engram tables | Reference | Quantized by peasantsmith | **Only these two tables are newly encoded** |
+| Runtime | DeepSeek reference implementation / compatible frameworks | Project Maya | **Project Maya with the included Q3_K Engram patch** |
 
-### Dateigrößen und Vergleichsumfang
+### File sizes and comparison scope
 
-| Paket / Bestandteil | Bytes | GB | GiB |
+| Package / component | Bytes | GB | GiB |
 | --- | ---: | ---: | ---: |
-| Offizielles Checkpoint-Paket, Summe aller 48 Safetensors-Dateien | 510.296.708.312 | 510,297 | 475,251 |
-| Maya-S, sechs Hauptmodell-GGUFs | 339.477.953.988 | 339,478 | 316,163 |
-| **Sakura, sechs Hauptmodell-GGUFs** | **262.675.668.988** | **262,676** | **244,636** |
-| Unveränderter Maya-S-/Sakura-Modellrumpf, Shards 1–4 | 178.193.155.104 | 178,193 | 165,955 |
-| Maya-S-Tabellenpayload, Q6_K | 161.284.798.500 | 161,285 | 150,208 |
-| **Sakura-Tabellenpayload, Q3_K** | **84.482.513.500** | **84,483** | **78,680** |
+| Official checkpoint package, sum of all 48 Safetensors files | 510,296,708,312 | 510.297 | 475.251 |
+| Maya-S, six main-model GGUF files | 339,477,953,988 | 339.478 | 316.163 |
+| **Sakura, six main-model GGUF files** | **262,675,668,988** | **262.676** | **244.636** |
+| Unchanged Maya-S/Sakura backbone, shards 1–4 | 178,193,155,104 | 178.193 | 165.955 |
+| Maya-S table payload, Q6_K | 161,284,798,500 | 161.285 | 150.208 |
+| **Sakura table payload, Q3_K** | **84,482,513,500** | **84.483** | **78.680** |
 
-**GB = 10⁹ Bytes; GiB = 2³⁰ Bytes.** Die beiden Tabellenheader belegen zusammen weitere 384 Bytes. Kleine README-, Patch-, Lizenz- und Manifestdateien sind in den GGUF-Summen nicht enthalten.
+**GB = 10⁹ bytes; GiB = 2³⁰ bytes.** The two table headers add 384 bytes in total. Small README, patch, license and manifest files are excluded from the GGUF totals.
 
-Der direkte Größenvergleich mit identischem Hauptmodellumfang ist **Maya-S gegen Sakura**. Die 510,297 GB des Originals sind das gesamte veröffentlichte 48-Dateien-Safetensors-Paket; daraus wird hier keine bereinigte Hauptmodell-Ersparnis abgeleitet. Sakura enthält den sechsteiligen GGUF-Hauptmodellsatz; zusätzliche Vision-/DSpark-Dateien werden hier nicht mitgeliefert. Dateigrößen sind keine RAM-/VRAM-Bedarfsangaben.
+The direct comparison with identical main-model scope is **Maya-S versus Sakura**. The original's 510.297 GB is the entire published 48-file Safetensors package; no scope-adjusted main-model reduction is claimed against that figure. Sakura contains the six-part main-model GGUF set. Additional vision/DSpark files are not included here. File sizes are not RAM/VRAM requirements.
 
-### Welche Maya-S-Quantisierung bleibt erhalten?
+### Which Maya-S quantization is preserved?
 
-| Tensorgruppe | Übernommene Maya-S-Typen |
+| Tensor group | Retained Maya-S types |
 | --- | --- |
-| Routed Experts, Gate/Up | IQ2_XXS; IQ2_S in den ersten/letzten vier Layern |
-| Routed Experts, Down | IQ3_XXS; IQ3_S in den ersten/letzten vier Layern |
-| Attention, Shared Experts, Embeddings, Output, Engram-Value-Projektion | Q8_0 |
-| Router, Normen, Hyper-Connection-Mixing, Attention Sinks | F32 |
-| Kleine Indexer-Projektionen | BF16 |
-| Große Engram-Embedding-Tabellen | **Q6_K → Q3_K; einzige neu quantisierte Tensorgruppe** |
+| Routed experts, gate/up | IQ2_XXS; IQ2_S in the first/last four layers |
+| Routed experts, down | IQ3_XXS; IQ3_S in the first/last four layers |
+| Attention, shared experts, embeddings, output, Engram value projection | Q8_0 |
+| Router, norms, hyper-connection mixing, attention sinks | F32 |
+| Small indexer projections | BF16 |
+| Large Engram embedding tables | **Q6_K → Q3_K; the only newly quantized tensor group** |
 
-Damit bezeichnet **Q3_K in diesem Repository die Engram-Tabellen**. Der Modellrumpf behält die gemischte Quantisierung von Maya-S.
+Thus, **Q3_K in this repository refers to the Engram tables**. The backbone retains Maya-S's mixed quantization.
 
-## Architektur und Tabellenlayout
+## Architecture and table layout
 
-Die geprüfte Originalkonfiguration nennt 40 Text-Layer, Hidden Size 5.120, 384 geroutete Experten pro Layer, 6 ausgewählte Experten pro Token und einen Shared Expert. Die Engram-Tabellen liegen in den GGUF-Layern 1 und 14. Konfiguriert sind N-Gramme bis Länge 4 und 256 Werte pro Tabellenzeile.
+The checked original configuration specifies 40 text layers, a hidden size of 5,120, 384 routed experts per layer, 6 selected experts per token and one shared expert. The Engram tables belong to GGUF layers 1 and 14. The configuration supports N-grams up to length 4 and uses 256 values per table row.
 
-| Tabelle | Zeilen | Werte pro Zeile | Q3_K-Payload |
+| Table | Rows | Values per row | Q3_K payload |
 | --- | ---: | ---: | ---: |
-| `blk.1.engram_embd.weight` | 384.006.168 | 256 | 42.240.678.480 Bytes |
-| `blk.14.engram_embd.weight` | 384.016.682 | 256 | 42.241.835.020 Bytes |
-| **Summe** | **768.022.850** | — | **84.482.513.500 Bytes** |
+| `blk.1.engram_embd.weight` | 384,006,168 | 256 | 42,240,678,480 bytes |
+| `blk.14.engram_embd.weight` | 384,016,682 | 256 | 42,241,835,020 bytes |
+| **Total** | **768,022,850** | — | **84,482,513,500 bytes** |
 
-| Formatdetail | Maya-S-Eingabe | Sakura-Ausgabe |
+| Format detail | Maya-S input | Sakura output |
 | --- | ---: | ---: |
-| GGML-Typ | Q6_K / 14 | Q3_K / 11 |
-| Werte pro Block / Zeile | 256 | 256 |
-| Bytes pro Zeile einschließlich Blockskalen | 210 | 110 |
-| Effektive Bits pro Wert einschließlich Blockskalen | 6,5625 | 3,4375 |
+| GGML type | Q6_K / 14 | Q3_K / 11 |
+| Values per block / row | 256 | 256 |
+| Bytes per row, including block scales | 210 | 110 |
+| Effective bits per value, including block scales | 6.5625 | 3.4375 |
 
-Namen, Dimensionen, Zeilenanzahl und Tabellenadressierung bleiben erhalten. Der GGUF-Tensortyp wird korrekt auf **11 / Q3_K** gesetzt; die neuen Daten werden nicht als Q6_K etikettiert.
+Tensor names, dimensions, row counts and table addressing are preserved. The GGUF tensor type is correctly set to **11 / Q3_K**; the new data is not labeled as Q6_K.
 
-Die Originalkonfiguration sieht bis zu 1.048.576 Kontextpositionen vor. Das ist eine Architekturangabe; für diesen Sakura-Build wurde kein Kontext- oder Speicherbenchmark durchgeführt.
+The original configuration allows up to 1,048,576 context positions. This is an architecture setting; no context-length or memory benchmark has been performed for this Sakura build.
 
-## Dateien und Prüfsummen
+## Files and checksums
 
-Alle sechs GGUF-Dateien liegen unter [Maya-S/](tree/main/Maya-S). Der gemeinsame Dateinamensanfang lautet `DeepSeek-V4.1-Flash-1017-Maya-S-IQ2_XXS-`.
+All six GGUF files are in [Maya-S/](tree/main/Maya-S). Their common filename prefix is `DeepSeek-V4.1-Flash-1017-Maya-S-IQ2_XXS-`.
 
-| Dateiendung | Inhalt | Größe in Bytes |
+| Filename suffix | Contents | Size in bytes |
 | --- | --- | ---: |
-| `00001-of-00006.gguf` | Unveränderter Rumpf | 47.887.697.312 |
-| `00002-of-00006.gguf` | Unveränderter Rumpf | 47.669.578.400 |
-| `00003-of-00006.gguf` | Unveränderter Rumpf | 47.103.347.360 |
-| `00004-of-00006.gguf` | Unveränderter Rumpf | 35.532.532.032 |
-| `00005-of-00006.gguf` | Engram, Layer 1, **Q3_K** | 42.240.678.672 |
-| `00006-of-00006.gguf` | Engram, Layer 14, **Q3_K** | 42.241.835.212 |
+| `00001-of-00006.gguf` | Unchanged backbone | 47,887,697,312 |
+| `00002-of-00006.gguf` | Unchanged backbone | 47,669,578,400 |
+| `00003-of-00006.gguf` | Unchanged backbone | 47,103,347,360 |
+| `00004-of-00006.gguf` | Unchanged backbone | 35,532,532,032 |
+| `00005-of-00006.gguf` | Engram, layer 1, **Q3_K** | 42,240,678,672 |
+| `00006-of-00006.gguf` | Engram, layer 14, **Q3_K** | 42,241,835,212 |
 
-Die ursprünglichen Shardnamen bleiben für die Split-Zuordnung erhalten. Auch wenn der Dateiname weiterhin `IQ2_XXS` enthält, sind die Tabellen in Shards 5/6 **Q3_K**; maßgeblich ist der geprüfte GGUF-Header.
+The original shard names are retained for split identification. Although the filenames still contain `IQ2_XXS`, the tables in shards 5/6 are **Q3_K**, as recorded in their verified GGUF headers.
 
-Das [Buildmanifest](resolve/main/build-manifest.json) enthält alle sechs Dateigrößen und SHA256 sowie Quellrevision, Patchhash und die beiden vollständigen Tabellen-Bauberichte. Die separaten Berichte stehen unter [build/shard5.json](resolve/main/build/shard5.json) und [build/shard6.json](resolve/main/build/shard6.json).
+The [build manifest](resolve/main/build-manifest.json) contains all six file sizes and SHA256 values, the source revision, patch hash and complete build reports for both tables. Separate reports are available as [build/shard5.json](resolve/main/build/shard5.json) and [build/shard6.json](resolve/main/build/shard6.json).
 
-## Tatsächlicher Cloud-Bau
+## Actual cloud build
 
-| Schritt / Messwert | Ergebnis |
+| Step / measurement | Result |
 | --- | --- |
-| Ausführungsumgebung | Öffentliche Standard-`ubuntu-24.04`-CPU-Runner; zwei Tabellenjobs parallel |
-| Gesamter Workflow | **1 h 27 min 29 s** |
-| Tabelle 5, Hashbildung/Kodierung und Uploadprüfung | 5.179,107 s / ca. 86 min 19 s |
-| Tabelle 6, Hashbildung/Kodierung und Uploadprüfung | 4.780,244 s / ca. 79 min 40 s |
-| Gelesene Q6_K-Quelldaten auf den Runnern | 322.569.597.000 Bytes, genau zwei Payload-Durchläufe |
-| Neue Q3_K-Tabellen | 84.482.513.500 Bytes Payload plus 384 Headerbytes |
-| Modellrumpf | Vier Dateien serverseitig kopiert; Quell-LFS-SHA256 erhalten |
-| Abschluss | Alle sechs Größen und Remote-LFS-SHA256 gegen das Manifest geprüft |
-| Ressourcen | CPU; keine GPU, kostenpflichtigen Runner oder Inferenz-API |
+| Execution environment | Public standard `ubuntu-24.04` CPU runners; two table jobs in parallel |
+| Complete workflow | **1 h 27 min 29 s** |
+| Table 5, hashing/encoding and upload verification | 5,179.107 s / approximately 86 min 19 s |
+| Table 6, hashing/encoding and upload verification | 4,780.244 s / approximately 79 min 40 s |
+| Q6_K source data read on the runners | 322,569,597,000 bytes, exactly two payload passes |
+| New Q3_K tables | 84,482,513,500 payload bytes plus 384 header bytes |
+| Backbone | Four files copied server-side; source LFS SHA256 values preserved |
+| Final verification | All six sizes and remote LFS SHA256 values checked against the manifest |
+| Resources | CPU; no GPU, paid runners or inference API |
 
-Die Tabellen wurden als deterministischer, seekbarer Quantisierungsstrom mit begrenzten RAM-Blöcken erstellt. Für Hashbildung und Upload wurden dieselben Quelldaten erneut gelesen und kodiert. Es wurde keine vollständige 42-GB-Ausgabetabelle auf der Runner-Disk materialisiert. Der Nutzer-PC war am Vollbau nicht beteiligt.
+The tables were generated as a deterministic, seekable quantization stream using bounded RAM blocks. The same source data was read and encoded again for hashing and upload. No complete 42 GB output table was materialized on the runner's disk. The user's PC was not involved in the full build.
 
-## Runtime und Nutzung
+## Runtime and usage
 
-Erforderlich ist der enthaltene [Maya-Q3_K-Engram-Patch](resolve/main/runtime/maya-q3k.patch) für [Project Maya](https://github.com/mw00/project-maya), geprüft gegen Revision `451f9cb6a21ea65673bdde2e57b4a670ae2b8859`.
+The included [Maya Q3_K Engram patch](resolve/main/runtime/maya-q3k.patch) is required for [Project Maya](https://github.com/mw00/project-maya). It was checked against revision `451f9cb6a21ea65673bdde2e57b4a670ae2b8859`.
 
-Der Patch ergänzt Q3_K ausdrücklich im Engram-Reader und in den zugehörigen Decodern. Eine allgemeine Q3_K-Unterstützung eines Packers oder einer anderen Runtime reicht für diesen speziellen Tabellenpfad nicht aus.
+The patch explicitly adds Q3_K to the Engram reader and the associated decoders. Generic Q3_K support in a packer or another runtime does not establish support for this particular table path.
 
-Der Patch wird als Quellcode mitgeliefert. Er wurde gegen den angegebenen Maya-Stand entwickelt; es liegt kein vorgebauter Sakura-Windows-/HIP-Starter bei. Die geänderten CUDA-Übersetzungseinheiten wurden kompiliert und der GPU-Paritätstest verlinkt. GPU-Ausführung, ein vollständiger Maya-Programm-Link sowie HIP-/Windows-Betrieb wurden nicht nachgewiesen. Vision und DSpark benötigen gegebenenfalls die separaten Upstream-Komponenten.
+The patch is provided as source code. It targets the specified Maya revision; no prebuilt Sakura Windows/HIP launcher is included. The modified CUDA translation units were compiled and the GPU parity-test executable was linked. GPU execution, a full Maya executable link and HIP/Windows operation have not been demonstrated. Vision and DSpark may require the separate upstream components.
 
-## Prüfstand und Qualitätsvergleich
+## Verification and quality comparison
 
-| Eigene Prüfung | Ergebnis |
+| Check performed for this build | Result |
 | --- | --- |
-| Realer CPU-Pilot | 98.304 Q6_K-Zeilen aus Anfang, Mitte und Ende beider Tabellen |
-| Wiederholte Quantisierung der Pilotblöcke | Identische Q3_K-SHA256 in drei Durchläufen pro Probe |
-| Q3_K-CPU-Decoder gegen ggml | Bitgenaue Parität auf 192 realen quantisierten Zeilen, 4.096 Zufallsblöcken und 63.488 endlichen FP16-Skalen |
-| Maya-Reader/Cache | 64-Bit-Offsets, Token-Slots, Duplikate, Eviction und Short Reads geprüft |
-| GGUF-Streaming / HF-Kompatibilität | Seek-/Blockgrenzen, wiederholte Hashbildung und Multipart-Zusammensetzung geprüft |
-| Vollständige Ausgabedateien | Größen und Remote-LFS-SHA256 geprüft |
-| Zusätzliche Headerkontrolle nach Release | Beide 192-Byte-Header stimmen mit dem erwarteten Q3_K-Layout überein |
+| CPU pilot on real data | 98,304 Q6_K rows from the beginning, middle and end of both tables |
+| Repeated pilot-block quantization | Identical Q3_K SHA256 values across three encodings of each sample |
+| Q3_K CPU decoder versus ggml | Bit-exact parity on 192 real quantized rows, 4,096 random blocks and 63,488 finite FP16 scales |
+| Maya reader/cache | 64-bit offsets, token slots, duplicates, eviction and short reads checked |
+| GGUF streaming / HF compatibility | Seeking/block boundaries, repeated hashing and multipart reconstruction checked |
+| Complete output files | Sizes and remote LFS SHA256 values verified |
+| Additional post-release header check | Both 192-byte headers match the expected Q3_K layout |
 
-Im CPU-Pilot lagen die RRMSE-Werte der sechs Probenblöcke gegenüber der **vorhandenen Q6_K-Eingabe** zwischen etwa **15,209 % und 15,233 %**. Das misst numerische Abweichung der Tabellenwerte. Es ist kein Vergleich mit den ursprünglichen FP8-Tabellen und kein PPL-, Coding-, Antwortqualitäts- oder Inferenzgeschwindigkeitstest.
+In the CPU pilot, the six sample blocks had RRMSE values of approximately **15.209%–15.233%** relative to the **existing Q6_K input**. This measures numerical differences in table values. It is not a comparison with the original FP8 tables, or a perplexity, coding, response-quality or inference-speed evaluation.
 
-Die [Maya-S-Modellkarte an der Quellrevision](https://huggingface.co/peasantsmith/DeepSeek-V4.1-Flash-1017-Maya-GGUF/blob/b9e25f34b53806b24e5b18085de6ed5967ad9ed5/README.md) berichtet separat folgende Messung gegenüber DeepSeeks Referenz, auf 10 zurückgehaltenen Sequenzen zu jeweils 2.047 Tokens:
+The [Maya-S model card at the source revision](https://huggingface.co/peasantsmith/DeepSeek-V4.1-Flash-1017-Maya-GGUF/blob/b9e25f34b53806b24e5b18085de6ed5967ad9ed5/README.md) separately reports the following comparison against DeepSeek's reference, using 10 held-out sequences of 2,047 tokens each:
 
-| Upstream-Messung von peasantsmith | Gleicher Top-Token | KL-Divergenz |
+| Upstream measurement by peasantsmith | Same top token | KL divergence |
 | --- | ---: | ---: |
-| Originalgewichte durch Mayas Engine | 96,4 % | 0,047 |
-| Maya-S mit Q6_K-Tabellen | 92,6 % | 0,120 |
-| **Sakura mit Q3_K-Tabellen** | **Nicht gemessen** | **Nicht gemessen** |
+| Original weights through Maya's engine | 96.4% | 0.047 |
+| Maya-S with Q6_K tables | 92.6% | 0.120 |
+| **Sakura with Q3_K tables** | **Not measured** | **Not measured** |
 
-Die beiden Upstream-Werte wurden hier nicht neu gemessen und werden nicht als Sakura-Ergebnis übernommen. Sie beziehen sich auf die dort beschriebene Tokenvergleichsmethode; sie sind keine allgemeinen Aufgaben-Scores. Für Sakura werden keine unveränderte Modellqualität oder zusätzlichen Tokens/s behauptet.
+The two upstream results were not reproduced here and are not presented as Sakura results. They refer to the token-comparison method described by the source, rather than general task scores. No claim of unchanged model quality or additional tokens/s is made for Sakura.
 
-**Es wurde kein vollständiger Inferenztest durchgeführt.**
+## Reproducible sources
 
-## Reproduzierbare Quellen
-
-| Bestandteil | Gepinnter Stand |
+| Component | Pinned version |
 | --- | --- |
-| Direktes Maya-S-Eingabemodell | `b9e25f34b53806b24e5b18085de6ed5967ad9ed5` |
-| Offizielles DeepSeek-Checkpoint, Konfiguration und Größeninventar | `1bae0e1088993b9b82de08f59de5be5a34e42170` |
-| Maya-Engine vor Sakura-Patch | `451f9cb6a21ea65673bdde2e57b4a670ae2b8859` |
-| llama.cpp / ggml-CPU-Quantizer | `c7fc5094179bf8a9c73c18593db714f8da41a402` |
-| SHA256 des mitgelieferten Runtime-Patches | `e5e2c5d50633fcf1fb57478656e6bce4d7453d06ea43b2381c9da6fe395f0cfd` |
+| Direct Maya-S input model | `b9e25f34b53806b24e5b18085de6ed5967ad9ed5` |
+| Official DeepSeek checkpoint, configuration and size inventory | `1bae0e1088993b9b82de08f59de5be5a34e42170` |
+| Maya engine before the Sakura patch | `451f9cb6a21ea65673bdde2e57b4a670ae2b8859` |
+| llama.cpp / ggml CPU quantizer | `c7fc5094179bf8a9c73c18593db714f8da41a402` |
+| SHA256 of the included runtime patch | `e5e2c5d50633fcf1fb57478656e6bce4d7453d06ea43b2381c9da6fe395f0cfd` |
 
-Architekturangaben und das Originalformat stammen aus der [gepinnten DeepSeek-Konfiguration](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017/blob/1bae0e1088993b9b82de08f59de5be5a34e42170/config.json). Die Originalpaketgröße wurde aus den Dateimetadaten der 48 Safetensors-Dateien dieser Revision summiert. Dafür wurden keine Originalgewichte heruntergeladen.
+Architecture details and the original format come from the [pinned DeepSeek configuration](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017/blob/1bae0e1088993b9b82de08f59de5be5a34e42170/config.json). The original package size was calculated by summing metadata sizes for all 48 Safetensors files at that revision. No original weight payload was downloaded to obtain those figures.
 
-## Lizenz und Danksagung
+## License and acknowledgments
 
-Modell und Quantisierung: **MIT**, entsprechend der Original- und Maya-S-Veröffentlichung. Die mitgelieferten Lizenztexte stehen unter [LICENSE.DeepSeek](resolve/main/LICENSE.DeepSeek), [LICENSE.Maya](resolve/main/LICENSE.Maya) und [LICENSE.llama.cpp](resolve/main/LICENSE.llama.cpp).
+Model and quantization: **MIT**, following the original and Maya-S releases. Included license texts are [LICENSE.DeepSeek](resolve/main/LICENSE.DeepSeek), [LICENSE.Maya](resolve/main/LICENSE.Maya) and [LICENSE.llama.cpp](resolve/main/LICENSE.llama.cpp).
 
-Basismodell: **DeepSeek-AI**. Maya-S-Quantisierung und Tabellenquelle: **peasantsmith**. Runtime: **Project Maya**. CPU-Quantizer: **ggml / llama.cpp**. Sakura ändert ausschließlich die beiden großen Engram-Tabellen und ergänzt den dafür benötigten Maya-Decoderpfad.
+Base model: **DeepSeek-AI**. Maya-S quantization and table source: **peasantsmith**. Runtime: **Project Maya**. CPU quantizer: **ggml / llama.cpp**. Sakura changes only the two large Engram tables and adds the Maya decoder support required to read them.

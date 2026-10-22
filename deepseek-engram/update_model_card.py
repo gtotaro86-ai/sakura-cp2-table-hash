@@ -33,7 +33,7 @@ def main():
         raise RuntimeError('Bounded model card with YAML required')
     if any(word in new.lower() for word in (b'gtotaro86', b'sakura-cp2-table-hash', b'experimentell')):
         raise RuntimeError('Forbidden public model-card reference')
-    if 'Es wurde kein vollständiger Inferenztest durchgeführt.'.encode() not in new:
+    if b'No full inference test has been performed.' not in new:
         raise RuntimeError('Required inference notice missing')
     card = ModelCard(new.decode('utf-8'))
     if card.data.base_model != 'peasantsmith/DeepSeek-V4.1-Flash-1017-Maya-GGUF':
@@ -54,7 +54,7 @@ def main():
     else:
         commit = api.create_commit(repo_id=REPO, parent_commit=before.sha,
             operations=[CommitOperationAdd(path_in_repo='README.md', path_or_fileobj=new)],
-            commit_message='Add validated YAML, source provenance and detailed model comparison')
+            commit_message='Publish complete English model card with source provenance and comparisons')
         revision = commit.oid
     after = api.model_info(REPO, revision=revision, files_metadata=True)
     if weights(after) != baseline:
