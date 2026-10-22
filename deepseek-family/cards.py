@@ -32,7 +32,7 @@ tags:
 - q3_k
 - mixture-of-experts
 ---
-# Sakura DeepSeek-V4.1-Flash-1017 · {q} · Engram Q3_K
+# Sakura DeepSeek-V4.1-Flash-1017 · {q.replace('Maya-S-IQ2_XXS', 'Maya-S IQ2_XXS')} · Engram Q3_K
 
 **The original {q} backbone is unchanged. Only the separate Engram lookup-table files are replaced with Q3_K. All experts and all lookup rows are retained.**
 
