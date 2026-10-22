@@ -1,0 +1,11 @@
+{
+  "source_commit": "7988ba596e6dc0a81722bc9c6fd2c69c7809a77b",
+  "cpu_checks_run": 39728183894,
+  "destination_repo": "webmp3/Sakura-DeepSeek-V4.1-Flash-1017-Engram-Q3_K-GGUF",
+  "format": "Q3_K",
+  "full_build_and_publication_authorized": true,
+  "full_inference_test_required": false,
+  "paid_resources_authorized": false,
+  "free_storage_mode": "auto-free-account",
+  "notice": "Es wurde kein vollständiger Inferenztest durchgeführt."
+}
