@@ -1,0 +1,79 @@
+{
+  "repository": "webmp3/Sakura-DeepSeek-V4.1-Flash-1017-Engram-Q3_K-GGUF",
+  "revision": "4a701f59f623b08a859368926cd9a210ab446941",
+  "complete": true,
+  "files": [
+    {
+      "path": "Maya-S/DeepSeek-V4.1-Flash-1017-Maya-S-IQ2_XXS-00001-of-00006.gguf",
+      "bytes": 47887697312,
+      "sha256": "1f3437f57042e69f94c141ffbcba0d5610dab63feb07244fb468be4940d6763f"
+    },
+    {
+      "path": "Maya-S/DeepSeek-V4.1-Flash-1017-Maya-S-IQ2_XXS-00002-of-00006.gguf",
+      "bytes": 47669578400,
+      "sha256": "66501fee8702ffd54e6f065323ab54bb3150d20b10b01922c589e7462c7b5ba6"
+    },
+    {
+      "path": "Maya-S/DeepSeek-V4.1-Flash-1017-Maya-S-IQ2_XXS-00003-of-00006.gguf",
+      "bytes": 47103347360,
+      "sha256": "3195b23f33337c46a07c48583946d99147c3635412bc4adc6acdc4cf42bf30ad"
+    },
+    {
+      "path": "Maya-S/DeepSeek-V4.1-Flash-1017-Maya-S-IQ2_XXS-00004-of-00006.gguf",
+      "bytes": 35532532032,
+      "sha256": "d60dba35fac9601cd5c6026439dd980c457a5bb1c009192ea539b220108ea0db"
+    },
+    {
+      "path": "Maya-S/DeepSeek-V4.1-Flash-1017-Maya-S-IQ2_XXS-00005-of-00006.gguf",
+      "bytes": 42240678672,
+      "sha256": "521a214ee5c1549b6dcafd44df0a2080d6d807f3160f06dc6dbf338d66c47a3b"
+    },
+    {
+      "path": "Maya-S/DeepSeek-V4.1-Flash-1017-Maya-S-IQ2_XXS-00006-of-00006.gguf",
+      "bytes": 42241835212,
+      "sha256": "c41ae848a4bbb0443f0f99abfa42b61e2fc3a4be807f1a67ecf2c1cd180f9906"
+    }
+  ],
+  "total_gguf_bytes": 262675668988,
+  "headers": [
+    {
+      "shard": 5,
+      "type": 11,
+      "tensor": "blk.1.engram_embd.weight",
+      "rows": 384006168,
+      "header_sha256": "7da4dd4c0b3088c22145aee2c026419f90eb76ec348d61122e760941e277f1bc"
+    },
+    {
+      "shard": 6,
+      "type": 11,
+      "tensor": "blk.14.engram_embd.weight",
+      "rows": 384016682,
+      "header_sha256": "9602a45303636d23cc3f90f3c2fef761f7e72761bfb7c41926ea1084eb5c361e"
+    }
+  ],
+  "post_release_model_range_bytes": 384,
+  "no_personal_github_references_in_checked_metadata": true,
+  "patch_matches_checked_source": true,
+  "model_inference_tested": false,
+  "workflow_run_id": 39728375821,
+  "workflow_elapsed_seconds": 5249,
+  "table_elapsed_seconds": {
+    "5": 5179.1069099159995,
+    "6": 4780.243815603
+  },
+  "table_source_budgets": {
+    "5": {
+      "reserved_bytes": 161282590560,
+      "request_count": 734,
+      "request_ledger_sha256": "756731f6fdedda9b3720538925fdd60801d9c23063951c2891c8ce47153c4ce1"
+    },
+    "6": {
+      "reserved_bytes": 161287006440,
+      "request_count": 734,
+      "request_ledger_sha256": "3d402d7d994ce2726209b43a0555b914e5ec91412d470ed6f8b484f2443af6af"
+    }
+  },
+  "workflow_completed_at_berlin": "2026-10-22T08:57:35+02:00",
+  "source_gguf_bytes": 339477953988,
+  "reduction_bytes": 76802285000
+}
