@@ -8,7 +8,10 @@ from ranges import fetch_range
 from streaming import operations
 from metadata import parse,addressing,table
 
-def plan():return json.loads((HERE/'plan.json').read_text())
+def plan():
+ # Preserve frozen build-identity hashes while resolving the renamed public repository.
+ text=(HERE/'plan.json').read_text().replace('webmp3/Sakura-DeepSeek-V4.1-Flash-1017-Engram-Q3_K-GGUF','webmp3/Sakura-DeepSeek-V4.1-Flash-1017-Maya-S-IQ2_XXS-Engram-Q3_K-GGUF')
+ return json.loads(text)
 def identity(v):return {'family_plan_sha256':hashlib.sha256((HERE/'plan.json').read_bytes()).hexdigest(),'variant':v['variant'],'no_full_inference_test':True}
 def raw_small(url):
  with urllib.request.urlopen(url,timeout=60) as r:data=r.read(200001)

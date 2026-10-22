@@ -1,0 +1,37 @@
+name: Rename Sakura Maya-S repository and update references
+on:
+  push:
+    branches: [main]
+    paths: ['deepseek-family-rename/request.json']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: sakura-deepseek-full-family
+  cancel-in-progress: false
+jobs:
+  rename:
+    if: github.event.repository.private == false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      REPO_VISIBILITY: ${{ github.event.repository.visibility }}
+      SAKURA_FREE_STANDARD_RUNNER: ubuntu-24.04
+      HF_HUB_DISABLE_PROGRESS_BARS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify source hashes and syntax
+        run: |
+          cd deepseek-family
+          sha256sum -c SHA256SUMS
+          python -m py_compile release.py ../deepseek-family-rename/rename_repo.py
+      - run: python -m pip install huggingface-hub==2.2.0 PyYAML==6.0.3
+      - name: Rename the repository and update model-card and overview references
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python -u deepseek-family-rename/rename_repo.py
