@@ -1,0 +1,153 @@
+name: Build and release DeepSeek Engram Q3_K
+on:
+  push:
+    paths:
+      - 'deepseek-engram/release-request.json'
+  workflow_dispatch:
+    inputs:
+      destination_repo:
+        description: 'New HF model repository, e.g. webmp3/Sakura-DeepSeek-V4.1-Flash-1017-Engram-Q3_K-GGUF'
+        type: string
+        required: true
+      free_storage_confirmed:
+        description: 'I verified sufficient HF storage without paid overage/add-on charges'
+        type: boolean
+        required: true
+        default: false
+permissions:
+  contents: read
+defaults:
+  run:
+    working-directory: _deepseek_build/sakura-engram
+concurrency:
+  group: sakura-engram-hf-release
+  cancel-in-progress: false
+env:
+  REPO_VISIBILITY: ${{ github.event.repository.visibility }}
+  SAKURA_FREE_STANDARD_RUNNER: ubuntu-24.04
+  SAKURA_STORAGE_CONFIRMED: ${{ github.event_name == 'push' && 'auto-free-account' || inputs.free_storage_confirmed && 'true' || 'false' }}
+  HF_HUB_DISABLE_XET: '1'
+  HF_HUB_DISABLE_PROGRESS_BARS: '1'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '4'
+jobs:
+  initialize:
+    if: github.event.repository.private == false && (github.event_name == 'push' || inputs.free_storage_confirmed == true)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify and unpack DeepSeek source bundle
+        working-directory: .
+        run: |
+          python - <<'PYCODE'
+          from pathlib import Path
+          import hashlib, zipfile
+          source = Path('deepseek-engram/source.zip')
+          assert hashlib.sha256(source.read_bytes()).hexdigest() == '3a6fef922ab12085cf11a542815d7cce97a89625fe66e69d3b9b7b3c43f85359'
+          target = Path('_deepseek_build').resolve()
+          target.mkdir(exist_ok=True)
+          with zipfile.ZipFile(source) as archive:
+              for item in archive.infolist():
+                  assert (target / item.filename).resolve().is_relative_to(target)
+              archive.extractall(target)
+          PYCODE
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python release/verify_package.py
+      - run: python -m pip install numpy==2.3.5 huggingface-hub==2.2.0
+      - name: Initialize public destination with explicit incomplete-build notice
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          DESTINATION: ${{ inputs.destination_repo || 'webmp3/Sakura-DeepSeek-V4.1-Flash-1017-Engram-Q3_K-GGUF' }}
+        run: python release/publish_cloud.py init --repo "$DESTINATION"
+  tables:
+    needs: initialize
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [5, 6]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify and unpack DeepSeek source bundle
+        working-directory: .
+        run: |
+          python - <<'PYCODE'
+          from pathlib import Path
+          import hashlib, zipfile
+          source = Path('deepseek-engram/source.zip')
+          assert hashlib.sha256(source.read_bytes()).hexdigest() == '3a6fef922ab12085cf11a542815d7cce97a89625fe66e69d3b9b7b3c43f85359'
+          target = Path('_deepseek_build').resolve()
+          target.mkdir(exist_ok=True)
+          with zipfile.ZipFile(source) as archive:
+              for item in archive.infolist():
+                  assert (target / item.filename).resolve().is_relative_to(target)
+              archive.extractall(target)
+          PYCODE
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python release/verify_package.py
+      - run: python -m pip install numpy==2.3.5 huggingface-hub==2.2.0
+      - uses: actions/checkout@v4
+        with:
+          repository: ggml-org/llama.cpp
+          ref: c7fc5094179bf8a9c73c18593db714f8da41a402
+          path: _deepseek_build/sakura-engram/sources/llama
+          persist-credentials: false
+      - name: Build CPU quantizer
+        run: |
+          cmake -S sources/llama -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DGGML_NATIVE=OFF -DGGML_CUDA=OFF -DGGML_VULKAN=OFF -DLLAMA_CURL=OFF -DLLAMA_BUILD_TESTS=OFF -DLLAMA_BUILD_EXAMPLES=OFF -DLLAMA_BUILD_SERVER=OFF
+          cmake --build build --target ggml-base --parallel 4
+      - name: Run offline compatibility tests before model reads
+        run: |
+          g++ -std=c++17 -O2 -ffp-contract=off -shared -fPIC cloud-pilot/q3k_test_wrapper.cpp -o cloud-pilot/libq3k_scalar.so
+          python release/test_virtual_q3.py
+          python release/test_hf_stream.py
+      - name: Quantize and stream exactly one table; verify remote SHA256
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          DESTINATION: ${{ inputs.destination_repo || 'webmp3/Sakura-DeepSeek-V4.1-Flash-1017-Engram-Q3_K-GGUF' }}
+          SHARD: ${{ matrix.shard }}
+        run: python release/publish_cloud.py shard --repo "$DESTINATION" --shard "$SHARD" --block-rows 1048576
+  finalize:
+    needs: tables
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify and unpack DeepSeek source bundle
+        working-directory: .
+        run: |
+          python - <<'PYCODE'
+          from pathlib import Path
+          import hashlib, zipfile
+          source = Path('deepseek-engram/source.zip')
+          assert hashlib.sha256(source.read_bytes()).hexdigest() == '3a6fef922ab12085cf11a542815d7cce97a89625fe66e69d3b9b7b3c43f85359'
+          target = Path('_deepseek_build').resolve()
+          target.mkdir(exist_ok=True)
+          with zipfile.ZipFile(source) as archive:
+              for item in archive.infolist():
+                  assert (target / item.filename).resolve().is_relative_to(target)
+              archive.extractall(target)
+          PYCODE
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python release/verify_package.py
+      - run: python -m pip install numpy==2.3.5 huggingface-hub==2.2.0
+      - name: Verify tables, server-copy untouched backbone, publish manifest and short notice
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          DESTINATION: ${{ inputs.destination_repo || 'webmp3/Sakura-DeepSeek-V4.1-Flash-1017-Engram-Q3_K-GGUF' }}
+        run: python release/publish_cloud.py finalize --repo "$DESTINATION"
+      # No model caching or GitHub artifact storage; no GPU, paid runner or inference API.

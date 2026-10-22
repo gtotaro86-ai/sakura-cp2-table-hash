@@ -1,0 +1,74 @@
+name: DeepSeek Engram cloud checks
+on:
+  push:
+    paths:
+      - 'deepseek-engram/source.zip'
+      - 'deepseek-engram/README.md'
+      - '.github/workflows/deepseek-engram-cpu.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+defaults:
+  run:
+    working-directory: _deepseek_build/sakura-engram
+jobs:
+  offline-cpu:
+    if: github.event.repository.private == false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      OMP_NUM_THREADS: '4'
+      OPENBLAS_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify and unpack DeepSeek source bundle
+        working-directory: .
+        run: |
+          python - <<'PYCODE'
+          from pathlib import Path
+          import hashlib, zipfile
+          source = Path('deepseek-engram/source.zip')
+          assert hashlib.sha256(source.read_bytes()).hexdigest() == '3a6fef922ab12085cf11a542815d7cce97a89625fe66e69d3b9b7b3c43f85359'
+          target = Path('_deepseek_build').resolve()
+          target.mkdir(exist_ok=True)
+          with zipfile.ZipFile(source) as archive:
+              for item in archive.infolist():
+                  assert (target / item.filename).resolve().is_relative_to(target)
+              archive.extractall(target)
+          PYCODE
+      - name: Verify package files before execution
+        run: python release/verify_package.py
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/checkout@v4
+        with:
+          repository: ggml-org/llama.cpp
+          ref: c7fc5094179bf8a9c73c18593db714f8da41a402
+          path: _deepseek_build/sakura-engram/sources/llama
+          persist-credentials: false
+      - run: python -m pip install numpy==2.3.5 huggingface-hub==2.2.0
+      - name: Build only CPU quantizer
+        run: |
+          cmake -S sources/llama -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DGGML_NATIVE=OFF -DGGML_CUDA=OFF -DGGML_VULKAN=OFF -DLLAMA_CURL=OFF -DLLAMA_BUILD_TESTS=OFF -DLLAMA_BUILD_EXAMPLES=OFF -DLLAMA_BUILD_SERVER=OFF
+          cmake --build build --target ggml-base --parallel 4
+      - name: Offline CPU checks with existing tiny fixtures
+        run: python release/run_cpu_checks.py
+      - name: Ensure model publication is still blocked
+        run: |
+          python - <<'PY'
+          import subprocess, sys
+          result = subprocess.run([sys.executable, 'release/check_release_gate.py'])
+          assert result.returncode == 2, 'Expected explicit blocked pre-release gate'
+          PY
+      # No GPU, model requests, HF token, publication or artifact uploads.
+      - name: Check HF upload access without revealing secrets
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python release/access_preflight.py
+      - name: Remove personal GitHub references from HF overview
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python release/sanitize_overview.py
