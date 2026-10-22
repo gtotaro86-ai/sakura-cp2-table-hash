@@ -1,0 +1,10 @@
+{
+  "request": 1,
+  "mode": "free-public-standard-cpu",
+  "scope": [
+    "UD-IQ1_S",
+    "UD-IQ1_M"
+  ],
+  "plan_sha256": "283023a9a2a86f5dd0335a32baef238c77e98bb22727281d72f45e84492e5ec2",
+  "no_full_inference_test": true
+}

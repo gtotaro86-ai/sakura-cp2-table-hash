@@ -1,0 +1,15 @@
+{
+  "source_revision": "60ad3651641b5c97679c807e064ab1d7a3ca1455",
+  "runtime_revision": "b72050d03ae14bb3cb5138ecefab3f3f65157d31",
+  "metadata_sha256": "b843148a82de2b24df0c5a656669edbb9212eb69a41953249fe6c50d04186177",
+  "source_sample_q6_byte_equality": true,
+  "checked_rows": 192,
+  "combined_rows": 768022850,
+  "layer_start_rows": [
+    0,
+    384006168
+  ],
+  "constant_helpers_match_metadata": true,
+  "host_gather_real_rows_bit_exact": true,
+  "model_inference_tested": false
+}

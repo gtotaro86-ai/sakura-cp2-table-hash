@@ -1,0 +1,60 @@
+name: Assemble DeepSeek Unsloth IQ1 S and M with shared Q3 Engram
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'deepseek-unsloth/release-request.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: sakura-deepseek-unsloth-q3-release
+  cancel-in-progress: false
+jobs:
+  assemble:
+    if: github.event.repository.private == false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+    env:
+      REPO_VISIBILITY: ${{ github.event.repository.visibility }}
+      SAKURA_FREE_STANDARD_RUNNER: ubuntu-24.04
+      HF_HUB_DISABLE_XET: '1'
+      HF_HUB_DISABLE_PROGRESS_BARS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '4'
+    defaults:
+      run:
+        working-directory: deepseek-unsloth
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify the small reviewed package
+        run: sha256sum -c SHA256SUMS
+      - name: Install pinned CPU-only dependencies
+        run: python -m pip install numpy==2.3.5 huggingface-hub==2.2.0
+      - uses: actions/checkout@v4
+        with:
+          repository: ggml-org/llama.cpp
+          ref: c7fc5094179bf8a9c73c18593db714f8da41a402
+          path: _reference
+          persist-credentials: false
+      - name: Build only the CPU format library
+        run: |
+          cmake -S ../_reference -B ../_reference-build -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DGGML_NATIVE=OFF -DGGML_CUDA=OFF -DGGML_VULKAN=OFF -DLLAMA_CURL=OFF -DLLAMA_BUILD_TESTS=OFF -DLLAMA_BUILD_EXAMPLES=OFF -DLLAMA_BUILD_SERVER=OFF
+          cmake --build ../_reference-build --target ggml-base --parallel 4
+      - name: Run addressing, real-row decoder, corruption and actual HF adapter checks
+        run: |
+          python prepare_fixtures.py
+          python test_assembly.py
+          python test_publish.py
+          g++ -std=c++17 -O2 -pthread -I ../_reference/ggml/include test_host_rows.cpp -L ../_reference-build/bin -lggml-base -Wl,-rpath,"$PWD/../_reference-build/bin" -o test_host_rows
+          ./test_host_rows evidence
+      - name: Stream one shared Q3 table, server-copy both backbones, verify and release
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python -u publish.py
+      # No model caching, large files, model artifacts, GPU, paid runner or inference API.
