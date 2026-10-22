@@ -1,0 +1,14 @@
+{
+  "request": 1,
+  "mode": "free-public-standard-cpu",
+  "plan_sha256": "ad593ad435ccfae2711f050f42f13fd567e5bba4271a89d0e1727d16010fb02a",
+  "new_releases": 8,
+  "completed_deepseek_family_packages": 11,
+  "overview_repo": "webmp3/Sakura-DeepSeek-V4.1-Flash-1017-Overview",
+  "documentation_only_flash_updates": [
+    "UD-IQ1_S",
+    "UD-IQ1_M"
+  ],
+  "full_inference_test_waived_by_user": true,
+  "paid_resources_authorized": false
+}

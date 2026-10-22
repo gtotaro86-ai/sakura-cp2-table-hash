@@ -1,0 +1,29 @@
+{
+  "backbone": "unsloth/Qwen3.8-Flash-Next-GGUF",
+  "revision": "766911a6b7369840a91dbcd95f9f997acaab6cd6",
+  "cp2_table": {
+    "repo": "webmp3/Sakura-Qwen3.8-Flash-Next-Compact-ISTA-Q2_0-512E-CP2-GGUF",
+    "revision": "9b8fef370b812b3fd33787869d553793517245cb",
+    "file": "Sakura-Qwen3.8-Flash-Next-K512-Q2_0-CP2-v1-Experimental-00002-of-00002.gguf",
+    "sha256": "cf520743395d47e54e5e15ef14eaafe3f07d231e6dad0f185ac527c5f6826ffc"
+  },
+  "input_iq4_nl_table_payload_sha256": "dd55c28902f38cd88134b2a569c51282c5ffce30080487e1a645740115c56cc3",
+  "cp2_table_payload_sha256": "07f20122e2f3fc011b060ddc67cf8de58bbd6dc127c0ce4aeb31dd69c73bcfa8",
+  "cp2_table_payload_bytes": 13440064512,
+  "input_identity_proof": {
+    "full_streaming_sha256_variant": "UD-IQ1_S",
+    "run_conclusion": "success",
+    "other_variants": "Earlier exact Xet interior content-reference comparison plus boundary byte equality to UD-IQ1_S; not separate full streaming hashes"
+  },
+  "review": {
+    "date": "2026-10-22",
+    "scope": "HF hashes for unchanged shards/runtime; rebuilt header/layout and bounded samples",
+    "full_rebuilt_shard_rehashed": false,
+    "inference_tested": false
+  },
+  "documentation_update": {
+    "scope": "English comparison and collapsed Chinese; no weight, runtime, starter or model-name change",
+    "private_build_links_omitted": true,
+    "model_inference_tested": false
+  }
+}

@@ -1,0 +1,156 @@
+name: Finish Sakura DeepSeek Maya and Unsloth family
+on:
+  push:
+    branches: [main]
+    paths: ['deepseek-family/request.json']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: sakura-deepseek-full-family
+  cancel-in-progress: false
+env:
+  REPO_VISIBILITY: ${{ github.event.repository.visibility }}
+  SAKURA_FREE_STANDARD_RUNNER: ubuntu-24.04
+  HF_HUB_DISABLE_PROGRESS_BARS: '1'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '4'
+jobs:
+  checks:
+    if: github.event.repository.private == false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    defaults:
+      run:
+        working-directory: deepseek-family
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: sha256sum -c SHA256SUMS
+      - run: python -m pip install numpy==2.3.5 huggingface-hub==2.2.0 hf-xet==1.7.0 PyYAML==6.0.3
+      - uses: actions/checkout@v4
+        with:
+          repository: ggml-org/llama.cpp
+          ref: c7fc5094179bf8a9c73c18593db714f8da41a402
+          path: _ggml
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: mw00/project-maya
+          ref: ffe2e5e53fd5254e7f3492a20e8ad2b51b26a197
+          path: _maya
+          persist-credentials: false
+      - name: Check exact Maya source patch and build the CPU oracle
+        run: |
+          git -C ../_maya apply --check ../deepseek-family/maya-v1.1.22-q3.patch
+          git -C ../_maya apply ../deepseek-family/maya-v1.1.22-q3.patch
+          cmake -S ../_ggml -B ../_ggml-build -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DGGML_NATIVE=OFF -DGGML_CUDA=OFF -DGGML_VULKAN=OFF -DLLAMA_CURL=OFF -DLLAMA_BUILD_TESTS=OFF -DLLAMA_BUILD_EXAMPLES=OFF -DLLAMA_BUILD_SERVER=OFF
+          cmake --build ../_ggml-build --target ggml-base --parallel 4
+      - name: Check native streaming, corruption, metadata and comparison cards
+        run: |
+          python ../deepseek-unsloth/prepare_fixtures.py
+          python test_streaming.py
+          python test_cards.py
+          python check_runtime_cpu.py --maya ../_maya --library ../_ggml-build/bin/libggml-base.so
+          g++ -std=c++17 -O2 -pthread -I ../_ggml/ggml/include ../deepseek-unsloth/test_host_rows.cpp -L ../_ggml-build/bin -lggml-base -Wl,-rpath,"$PWD/../_ggml-build/bin" -o host_rows
+          ./host_rows ../deepseek-unsloth/evidence
+      - name: Confirm prior CPU-cloud CUDA compile record matches this patch
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          h=hashlib.sha256(Path('maya-v1.1.22-q3.patch').read_bytes()).hexdigest()
+          r=json.loads(Path('evidence/runtime-cuda.json').read_text())
+          assert r['patch_sha256']==h and r['gpu_test_linked'] and r['iq1_translation_units_compiled']
+          assert not r['gpu_executed'] and not r['model_inference_tested']
+          print('Exact v1.1.22 patch CPU-tested here; CUDA compiled previously in Work CPU cloud, no GPU execution.')
+          PY
+  unsloth:
+    needs: checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+    defaults:
+      run:
+        working-directory: deepseek-family
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: sha256sum -c SHA256SUMS
+      - run: python -m pip install numpy==2.3.5 huggingface-hub==2.2.0 hf-xet==1.7.0 PyYAML==6.0.3
+      - run: python ../deepseek-unsloth/prepare_fixtures.py
+      - name: Validate all nine source layouts, stream four headers in one pass, copy seven backbones
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python -u release.py unsloth
+  maya_xs:
+    needs: checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+    defaults:
+      run:
+        working-directory: deepseek-family
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: sha256sum -c SHA256SUMS
+      - run: python -m pip install numpy==2.3.5 huggingface-hub==2.2.0 hf-xet==1.7.0 PyYAML==6.0.3
+      - run: python ../deepseek-unsloth/prepare_fixtures.py
+      - name: Stream correct XS table headers, copy three unchanged backbone files and verify
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python -u release.py maya
+  flash_cards:
+    needs: checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: deepseek-family
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: sha256sum -c SHA256SUMS
+      - run: python -m pip install huggingface-hub==2.2.0 PyYAML==6.0.3
+      - name: Update only two newer Flash-Next comparison cards and remove private build links
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python -u publish_docs.py --flash-only
+  overview_and_cards:
+    needs: [unsloth, maya_xs]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    defaults:
+      run:
+        working-directory: deepseek-family
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: sha256sum -c SHA256SUMS
+      - run: python -m pip install numpy==2.3.5 huggingface-hub==2.2.0 hf-xet==1.7.0 PyYAML==6.0.3
+      - run: python ../deepseek-unsloth/prepare_fixtures.py
+      - name: Finish eleven bilingual comparison cards, DeepSeek overview and two newer Flash-Next cards
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python -u publish_docs.py --deepseek-only
+      # Only public standard CPU runners. No model disk cache, large artifacts,
+      # GPU execution, paid runner, inference API, private build links or weight renames.

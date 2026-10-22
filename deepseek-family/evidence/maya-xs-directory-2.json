@@ -1,0 +1,16 @@
+{
+  "repo": "peasantsmith/DeepSeek-V4.1-Flash-1017-Maya-GGUF",
+  "revision": "c273fcbdda76a1db074c2f414cb70edbfca2f2ef",
+  "file": "Maya-XS/DeepSeek-V4.1-Flash-1017-Maya-XS-IQ1_S-00002-of-00005.gguf",
+  "file_bytes": 47775748128,
+  "source_lfs_sha256": "ba5afb43adfc667436ebcfbd82d25411fa2843ee7e1d877290611cd60f93cca1",
+  "tensor_count": 54,
+  "metadata": {
+    "split.no": 1,
+    "split.count": 5,
+    "split.tensors.count": 1044
+  },
+  "directory_end": 4120,
+  "data_offset": 4128,
+  "table_tensors": []
+}

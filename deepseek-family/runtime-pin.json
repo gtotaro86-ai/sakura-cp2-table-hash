@@ -1,0 +1,9 @@
+{
+  "repo": "mw00/project-maya",
+  "revision": "ffe2e5e53fd5254e7f3492a20e8ad2b51b26a197",
+  "version": "1.1.22",
+  "patch_sha256": "86597a42a6bf37386bad5a71ace0423b50571499575291ff7146f896241098c3",
+  "gpu_executed": false,
+  "hip_compiled": false,
+  "full_inference_test_performed": false
+}

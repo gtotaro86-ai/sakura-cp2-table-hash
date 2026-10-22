@@ -1,0 +1,717 @@
+{
+  "version": 1,
+  "policy": "free public standard ubuntu-24.04 CPU; no paid resource, GPU execution or inference API",
+  "original_repo": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "original_revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+  "combined_source": {
+    "repo": "webmp3/Sakura-DeepSeek-V4.1-Flash-1017-Unsloth-UD-IQ1_S-Engram-Q3_K-GGUF",
+    "revision": "d35e9e86044ff74417eed3bac0039d3e1cc89412",
+    "path": "UD-IQ1_S/DeepSeek-V4.1-Flash-1017-UD-IQ1_S-00005-of-00005.gguf",
+    "size": 84482513692,
+    "sha256": "3c8678a1ae3c25543a8e4ef7f2b157bfbca20cad7f0e52c5c0830a7f0b211037",
+    "header_hex": "474755460300000001000000000000000300000000000000080000000000000073706c69742e6e6f0200000004000b0000000000000073706c69742e636f756e74020000000500130000000000000073706c69742e74656e736f72732e636f756e7405000000130400001b000000000000007065725f6c617965725f746f6b656e5f656d62642e7765696768740200000000010000000000004219c72d000000000b000000000000000000000000000000000000000000000000000000000000"
+  },
+  "split_sources": {
+    "repo": "webmp3/Sakura-DeepSeek-V4.1-Flash-1017-Engram-Q3_K-GGUF",
+    "revision": "4a701f59f623b08a859368926cd9a210ab446941",
+    "files": [
+      {
+        "rows": 384006168,
+        "path": "Maya-S/DeepSeek-V4.1-Flash-1017-Maya-S-IQ2_XXS-00005-of-00006.gguf",
+        "size": 42240678672,
+        "sha256": "521a214ee5c1549b6dcafd44df0a2080d6d807f3160f06dc6dbf338d66c47a3b",
+        "header_hex": "474755460300000001000000000000000300000000000000080000000000000073706c69742e6e6f0200000004000b0000000000000073706c69742e636f756e74020000000600130000000000000073706c69742e74656e736f72732e636f756e7405000000140400001800000000000000626c6b2e312e656e6772616d5f656d62642e7765696768740200000000010000000000001878e316000000000b000000000000000000000000000000000000000000000000000000000000000000"
+      },
+      {
+        "rows": 384016682,
+        "path": "Maya-S/DeepSeek-V4.1-Flash-1017-Maya-S-IQ2_XXS-00006-of-00006.gguf",
+        "size": 42241835212,
+        "sha256": "c41ae848a4bbb0443f0f99abfa42b61e2fc3a4be807f1a67ecf2c1cd180f9906",
+        "header_hex": "474755460300000001000000000000000300000000000000080000000000000073706c69742e6e6f0200000005000b0000000000000073706c69742e636f756e74020000000600130000000000000073706c69742e74656e736f72732e636f756e7405000000140400001900000000000000626c6b2e31342e656e6772616d5f656d62642e7765696768740200000000010000000000002aa1e316000000000b0000000000000000000000000000000000000000000000000000000000000000"
+      }
+    ]
+  },
+  "new_table_groups": {
+    "u6of6": [
+      "webmp3/Sakura-DeepSeek-V4.1-Flash-1017-Unsloth-UD-IQ2_XXS-Engram-Q3_K-GGUF"
+    ],
+    "u8of8": [
+      "webmp3/Sakura-DeepSeek-V4.1-Flash-1017-Unsloth-UD-IQ3_S-Engram-Q3_K-GGUF",
+      "webmp3/Sakura-DeepSeek-V4.1-Flash-1017-Unsloth-UD-Q3_K_XL-Engram-Q3_K-GGUF"
+    ],
+    "u7of7": [
+      "webmp3/Sakura-DeepSeek-V4.1-Flash-1017-Unsloth-UD-Q2_K_XL-Engram-Q3_K-GGUF",
+      "webmp3/Sakura-DeepSeek-V4.1-Flash-1017-Unsloth-UD-IQ3_XXS-Engram-Q3_K-GGUF"
+    ],
+    "u8of9": [
+      "webmp3/Sakura-DeepSeek-V4.1-Flash-1017-Unsloth-UD-Q4_K_XL-Engram-Q3_K-GGUF",
+      "webmp3/Sakura-DeepSeek-V4.1-Flash-1017-Unsloth-UD-Q8_K_XL-Engram-Q3_K-GGUF"
+    ]
+  },
+  "variants": [
+    {
+      "kind": "unsloth",
+      "variant": "UD-IQ1_M",
+      "repo": "webmp3/Sakura-DeepSeek-V4.1-Flash-1017-Unsloth-UD-IQ1_M-Engram-Q3_K-GGUF",
+      "source_repo": "unsloth/DeepSeek-V4.1-Flash-1017-GGUF",
+      "source_revision": "60ad3651641b5c97679c807e064ab1d7a3ca1455",
+      "backbone": [
+        {
+          "path": "UD-IQ1_M/DeepSeek-V4.1-Flash-1017-UD-IQ1_M-00001-of-00005.gguf",
+          "size": 5780923,
+          "sha256": "b843148a82de2b24df0c5a656669edbb9212eb69a41953249fe6c50d04186177"
+        },
+        {
+          "path": "UD-IQ1_M/DeepSeek-V4.1-Flash-1017-UD-IQ1_M-00002-of-00005.gguf",
+          "size": 49707332128,
+          "sha256": "8a406949fac9583cd4ab68ce5be1151e5760a18f936548de38f551d2a396b008"
+        },
+        {
+          "path": "UD-IQ1_M/DeepSeek-V4.1-Flash-1017-UD-IQ1_M-00003-of-00005.gguf",
+          "size": 49292777280,
+          "sha256": "4f738cf3dadbe49141ee2092c047be7d52de0157d54a3ffb45c8b30a600ae17b"
+        },
+        {
+          "path": "UD-IQ1_M/DeepSeek-V4.1-Flash-1017-UD-IQ1_M-00004-of-00005.gguf",
+          "size": 40803165856,
+          "sha256": "28e0edad226a941b0dab9c0ee60001f1fc2d09df59d03bb4971348b8f7da6006"
+        }
+      ],
+      "tables": [
+        {
+          "path": "UD-IQ1_M/DeepSeek-V4.1-Flash-1017-UD-IQ1_M-00005-of-00005.gguf",
+          "size": 84482513692,
+          "header_hex": "474755460300000001000000000000000300000000000000080000000000000073706c69742e6e6f0200000004000b0000000000000073706c69742e636f756e74020000000500130000000000000073706c69742e74656e736f72732e636f756e7405000000130400001b000000000000007065725f6c617965725f746f6b656e5f656d62642e7765696768740200000000010000000000004219c72d000000000b000000000000000000000000000000000000000000000000000000000000"
+        }
+      ],
+      "source_tables": [
+        {
+          "path": "UD-IQ1_M/DeepSeek-V4.1-Flash-1017-UD-IQ1_M-00005-of-00005.gguf",
+          "size": 110595290592,
+          "sha256": "771805301e695d72d268151dfc43043581ba904298574aa879d4349cbe67b020",
+          "type": 20
+        }
+      ],
+      "original_bytes": 250404346779,
+      "main_bytes": 224291569879,
+      "group": "u5of5",
+      "already_released": true,
+      "runtime_repo": "danielhanchen/llama.cpp",
+      "runtime_revision": "b72050d03ae14bb3cb5138ecefab3f3f65157d31"
+    },
+    {
+      "kind": "unsloth",
+      "variant": "UD-IQ1_S",
+      "repo": "webmp3/Sakura-DeepSeek-V4.1-Flash-1017-Unsloth-UD-IQ1_S-Engram-Q3_K-GGUF",
+      "source_repo": "unsloth/DeepSeek-V4.1-Flash-1017-GGUF",
+      "source_revision": "60ad3651641b5c97679c807e064ab1d7a3ca1455",
+      "backbone": [
+        {
+          "path": "UD-IQ1_S/DeepSeek-V4.1-Flash-1017-UD-IQ1_S-00001-of-00005.gguf",
+          "size": 5780923,
+          "sha256": "b843148a82de2b24df0c5a656669edbb9212eb69a41953249fe6c50d04186177"
+        },
+        {
+          "path": "UD-IQ1_S/DeepSeek-V4.1-Flash-1017-UD-IQ1_S-00002-of-00005.gguf",
+          "size": 49120285248,
+          "sha256": "4cb1b13e50db73650d6d9fcaf22cd938b4b2e993740c2abe6815f82107048461"
+        },
+        {
+          "path": "UD-IQ1_S/DeepSeek-V4.1-Flash-1017-UD-IQ1_S-00003-of-00005.gguf",
+          "size": 48899707008,
+          "sha256": "def479df0dca997b9cad4716f6375296c1f805887b5cde669105db99f0d9dd75"
+        },
+        {
+          "path": "UD-IQ1_S/DeepSeek-V4.1-Flash-1017-UD-IQ1_S-00004-of-00005.gguf",
+          "size": 24358544704,
+          "sha256": "863e1ba47e2479aedc9ce2cc3fe2f57e091548c943bd56d7dd149a771637a17d"
+        }
+      ],
+      "tables": [
+        {
+          "path": "UD-IQ1_S/DeepSeek-V4.1-Flash-1017-UD-IQ1_S-00005-of-00005.gguf",
+          "size": 84482513692,
+          "header_hex": "474755460300000001000000000000000300000000000000080000000000000073706c69742e6e6f0200000004000b0000000000000073706c69742e636f756e74020000000500130000000000000073706c69742e74656e736f72732e636f756e7405000000130400001b000000000000007065725f6c617965725f746f6b656e5f656d62642e7765696768740200000000010000000000004219c72d000000000b000000000000000000000000000000000000000000000000000000000000"
+        }
+      ],
+      "source_tables": [
+        {
+          "path": "UD-IQ1_S/DeepSeek-V4.1-Flash-1017-UD-IQ1_S-00005-of-00005.gguf",
+          "size": 110595290592,
+          "sha256": "771805301e695d72d268151dfc43043581ba904298574aa879d4349cbe67b020",
+          "type": 20
+        }
+      ],
+      "original_bytes": 232979608475,
+      "main_bytes": 206866831575,
+      "group": "u5of5",
+      "already_released": true,
+      "runtime_repo": "danielhanchen/llama.cpp",
+      "runtime_revision": "b72050d03ae14bb3cb5138ecefab3f3f65157d31"
+    },
+    {
+      "kind": "unsloth",
+      "variant": "UD-IQ2_XXS",
+      "repo": "webmp3/Sakura-DeepSeek-V4.1-Flash-1017-Unsloth-UD-IQ2_XXS-Engram-Q3_K-GGUF",
+      "source_repo": "unsloth/DeepSeek-V4.1-Flash-1017-GGUF",
+      "source_revision": "60ad3651641b5c97679c807e064ab1d7a3ca1455",
+      "backbone": [
+        {
+          "path": "UD-IQ2_XXS/DeepSeek-V4.1-Flash-1017-UD-IQ2_XXS-00001-of-00006.gguf",
+          "size": 5780923,
+          "sha256": "22ad51c224e499883c1a753ad35719af44c296bbc8bcb9c931de6bdf950fa3aa"
+        },
+        {
+          "path": "UD-IQ2_XXS/DeepSeek-V4.1-Flash-1017-UD-IQ2_XXS-00002-of-00006.gguf",
+          "size": 49955895008,
+          "sha256": "6880d0483490504a530b72686d79c92daa46e58ca5b71763bbfa3778d8a6131a"
+        },
+        {
+          "path": "UD-IQ2_XXS/DeepSeek-V4.1-Flash-1017-UD-IQ2_XXS-00003-of-00006.gguf",
+          "size": 49950675200,
+          "sha256": "04b3ec7947255efaf789da77557da9180e93128948644828798d07b8a6e7a60a"
+        },
+        {
+          "path": "UD-IQ2_XXS/DeepSeek-V4.1-Flash-1017-UD-IQ2_XXS-00004-of-00006.gguf",
+          "size": 48971469632,
+          "sha256": "318762f39cd7ebf03e3d7b30feaf938fab0464a9c2d6c0e0e99fc030bbfcd820"
+        },
+        {
+          "path": "UD-IQ2_XXS/DeepSeek-V4.1-Flash-1017-UD-IQ2_XXS-00005-of-00006.gguf",
+          "size": 16419622240,
+          "sha256": "34fa48fbe2237b1b71a4f18a04bbe10946f6b1c76b7bbff21c76da630da677b6"
+        }
+      ],
+      "tables": [
+        {
+          "path": "UD-IQ2_XXS/DeepSeek-V4.1-Flash-1017-UD-IQ2_XXS-00006-of-00006.gguf",
+          "size": 84482513692,
+          "header_hex": "474755460300000001000000000000000300000000000000080000000000000073706c69742e6e6f0200000005000b0000000000000073706c69742e636f756e74020000000600130000000000000073706c69742e74656e736f72732e636f756e7405000000130400001b000000000000007065725f6c617965725f746f6b656e5f656d62642e7765696768740200000000010000000000004219c72d000000000b000000000000000000000000000000000000000000000000000000000000"
+        }
+      ],
+      "source_tables": [
+        {
+          "path": "UD-IQ2_XXS/DeepSeek-V4.1-Flash-1017-UD-IQ2_XXS-00006-of-00006.gguf",
+          "size": 135172021792,
+          "sha256": "406103485a7a7193337adee38b7178d3b636940aaa3ca033bc91e0d3687e3031",
+          "type": 13
+        }
+      ],
+      "original_bytes": 300475464795,
+      "main_bytes": 249785956695,
+      "group": "u6of6",
+      "already_released": false,
+      "runtime_repo": "danielhanchen/llama.cpp",
+      "runtime_revision": "b72050d03ae14bb3cb5138ecefab3f3f65157d31"
+    },
+    {
+      "kind": "unsloth",
+      "variant": "UD-IQ3_S",
+      "repo": "webmp3/Sakura-DeepSeek-V4.1-Flash-1017-Unsloth-UD-IQ3_S-Engram-Q3_K-GGUF",
+      "source_repo": "unsloth/DeepSeek-V4.1-Flash-1017-GGUF",
+      "source_revision": "60ad3651641b5c97679c807e064ab1d7a3ca1455",
+      "backbone": [
+        {
+          "path": "UD-IQ3_S/DeepSeek-V4.1-Flash-1017-UD-IQ3_S-00001-of-00008.gguf",
+          "size": 5780886,
+          "sha256": "1d3027d28a1c749a5a185420640d2849849e5d42e7719df5d852572e1771de25"
+        },
+        {
+          "path": "UD-IQ3_S/DeepSeek-V4.1-Flash-1017-UD-IQ3_S-00002-of-00008.gguf",
+          "size": 49714948320,
+          "sha256": "a5c5b3a1d56fc64e2018442170371348683a6ca31d805040946635c508698c89"
+        },
+        {
+          "path": "UD-IQ3_S/DeepSeek-V4.1-Flash-1017-UD-IQ3_S-00003-of-00008.gguf",
+          "size": 49249617536,
+          "sha256": "0182203a6278cd29702003589b11635a8b6c58a17613270a94532a7487760092"
+        },
+        {
+          "path": "UD-IQ3_S/DeepSeek-V4.1-Flash-1017-UD-IQ3_S-00004-of-00008.gguf",
+          "size": 49262124864,
+          "sha256": "5e1aed1952f95ada91abb3332adb8d77eff6a98281a09c246e827c6031ba0a93"
+        },
+        {
+          "path": "UD-IQ3_S/DeepSeek-V4.1-Flash-1017-UD-IQ3_S-00005-of-00008.gguf",
+          "size": 49616016928,
+          "sha256": "69dd858b60744b9430be3b69684120d1bcb33ba4b5a740b60ddf8fc5a2875dee"
+        },
+        {
+          "path": "UD-IQ3_S/DeepSeek-V4.1-Flash-1017-UD-IQ3_S-00006-of-00008.gguf",
+          "size": 49262122592,
+          "sha256": "962c493b4f41f2dedfb31ebbfe725d14b55d97a442f0cd14296a42ac51345ff7"
+        },
+        {
+          "path": "UD-IQ3_S/DeepSeek-V4.1-Flash-1017-UD-IQ3_S-00007-of-00008.gguf",
+          "size": 15235610176,
+          "sha256": "c96d4a18a86dcdb3ed10e3e367bc9f3070d61a1da0144926519d2987c4e41b26"
+        }
+      ],
+      "tables": [
+        {
+          "path": "UD-IQ3_S/DeepSeek-V4.1-Flash-1017-UD-IQ3_S-00008-of-00008.gguf",
+          "size": 84482513692,
+          "header_hex": "474755460300000001000000000000000300000000000000080000000000000073706c69742e6e6f0200000007000b0000000000000073706c69742e636f756e74020000000800130000000000000073706c69742e74656e736f72732e636f756e7405000000130400001b000000000000007065725f6c617965725f746f6b656e5f656d62642e7765696768740200000000010000000000004219c72d000000000b000000000000000000000000000000000000000000000000000000000000"
+        }
+      ],
+      "source_tables": [
+        {
+          "path": "UD-IQ3_S/DeepSeek-V4.1-Flash-1017-UD-IQ3_S-00008-of-00008.gguf",
+          "size": 161284798692,
+          "sha256": "e70b4bf3ac5b26aa2addb048cff61a6be5490e99ba88cfbc29f7fb7279000141",
+          "type": 14
+        }
+      ],
+      "original_bytes": 423631019994,
+      "main_bytes": 346828734994,
+      "group": "u8of8",
+      "already_released": false,
+      "runtime_repo": "danielhanchen/llama.cpp",
+      "runtime_revision": "b72050d03ae14bb3cb5138ecefab3f3f65157d31"
+    },
+    {
+      "kind": "unsloth",
+      "variant": "UD-IQ3_XXS",
+      "repo": "webmp3/Sakura-DeepSeek-V4.1-Flash-1017-Unsloth-UD-IQ3_XXS-Engram-Q3_K-GGUF",
+      "source_repo": "unsloth/DeepSeek-V4.1-Flash-1017-GGUF",
+      "source_revision": "60ad3651641b5c97679c807e064ab1d7a3ca1455",
+      "backbone": [
+        {
+          "path": "UD-IQ3_XXS/DeepSeek-V4.1-Flash-1017-UD-IQ3_XXS-00001-of-00007.gguf",
+          "size": 5780927,
+          "sha256": "0c2a2031bd93ebd60aa6a4f3912775ba3990b5f39b24c6edf9ea029d2f387a28"
+        },
+        {
+          "path": "UD-IQ3_XXS/DeepSeek-V4.1-Flash-1017-UD-IQ3_XXS-00002-of-00007.gguf",
+          "size": 49485970112,
+          "sha256": "aa7827cc3c88958f4bc4134fab2c2d63dff1e53f947f76cbb34ce429205d551c"
+        },
+        {
+          "path": "UD-IQ3_XXS/DeepSeek-V4.1-Flash-1017-UD-IQ3_XXS-00003-of-00007.gguf",
+          "size": 49037273088,
+          "sha256": "7e5bc7c88e2bbcdadafcf672a1959581aeb2f2b23732ffd77823a756151a4e76"
+        },
+        {
+          "path": "UD-IQ3_XXS/DeepSeek-V4.1-Flash-1017-UD-IQ3_XXS-00004-of-00007.gguf",
+          "size": 49580635872,
+          "sha256": "a6b33c1cc73bbd2a54617f0714c5144ee8ee6d6403ceea49628633a7a2be21de"
+        },
+        {
+          "path": "UD-IQ3_XXS/DeepSeek-V4.1-Flash-1017-UD-IQ3_XXS-00005-of-00007.gguf",
+          "size": 48448165536,
+          "sha256": "5e392a945c534eb439279bbb638e7ea47e5a1cfca620b96c3fd47da87d5923a8"
+        },
+        {
+          "path": "UD-IQ3_XXS/DeepSeek-V4.1-Flash-1017-UD-IQ3_XXS-00006-of-00007.gguf",
+          "size": 36893972640,
+          "sha256": "e1b4a74844e637d8b15c94c30757e2359f81f287824c421e8b5b746b010e030e"
+        }
+      ],
+      "tables": [
+        {
+          "path": "UD-IQ3_XXS/DeepSeek-V4.1-Flash-1017-UD-IQ3_XXS-00007-of-00007.gguf",
+          "size": 84482513692,
+          "header_hex": "474755460300000001000000000000000300000000000000080000000000000073706c69742e6e6f0200000006000b0000000000000073706c69742e636f756e74020000000700130000000000000073706c69742e74656e736f72732e636f756e7405000000130400001b000000000000007065725f6c617965725f746f6b656e5f656d62642e7765696768740200000000010000000000004219c72d000000000b000000000000000000000000000000000000000000000000000000000000"
+        }
+      ],
+      "source_tables": [
+        {
+          "path": "UD-IQ3_XXS/DeepSeek-V4.1-Flash-1017-UD-IQ3_XXS-00007-of-00007.gguf",
+          "size": 161284798692,
+          "sha256": "9d21807ac1a40cd1635634c14135b5acca1c8b855dae228170361602c7de560b",
+          "type": 14
+        }
+      ],
+      "original_bytes": 394736596867,
+      "main_bytes": 317934311867,
+      "group": "u7of7",
+      "already_released": false,
+      "runtime_repo": "danielhanchen/llama.cpp",
+      "runtime_revision": "b72050d03ae14bb3cb5138ecefab3f3f65157d31"
+    },
+    {
+      "kind": "unsloth",
+      "variant": "UD-Q2_K_XL",
+      "repo": "webmp3/Sakura-DeepSeek-V4.1-Flash-1017-Unsloth-UD-Q2_K_XL-Engram-Q3_K-GGUF",
+      "source_repo": "unsloth/DeepSeek-V4.1-Flash-1017-GGUF",
+      "source_revision": "60ad3651641b5c97679c807e064ab1d7a3ca1455",
+      "backbone": [
+        {
+          "path": "UD-Q2_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q2_K_XL-00001-of-00007.gguf",
+          "size": 5780927,
+          "sha256": "0c2a2031bd93ebd60aa6a4f3912775ba3990b5f39b24c6edf9ea029d2f387a28"
+        },
+        {
+          "path": "UD-Q2_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q2_K_XL-00002-of-00007.gguf",
+          "size": 49290279808,
+          "sha256": "605972fece1b43277b9ff86a2cd79c9002ff424caefc507f20b6ccd47ae4ab39"
+        },
+        {
+          "path": "UD-Q2_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q2_K_XL-00003-of-00007.gguf",
+          "size": 49745070208,
+          "sha256": "1cb58786245bd8c38478174eecc648b12691bb79c2bb2f446c135ab00263580e"
+        },
+        {
+          "path": "UD-Q2_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q2_K_XL-00004-of-00007.gguf",
+          "size": 48680128800,
+          "sha256": "7b753295dd32534dfea52b2e9b5c4741b8007a955e38702ee37034271df7526e"
+        },
+        {
+          "path": "UD-Q2_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q2_K_XL-00005-of-00007.gguf",
+          "size": 49970937696,
+          "sha256": "336be674937fe29683e7aeee7c6af32f896b864931a6c916907b78e0f3692de4"
+        },
+        {
+          "path": "UD-Q2_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q2_K_XL-00006-of-00007.gguf",
+          "size": 1929325664,
+          "sha256": "192694fb09612e1200cce9ae35f3645ad39cf8aa43e94417070af9c4f4ecb43b"
+        }
+      ],
+      "tables": [
+        {
+          "path": "UD-Q2_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q2_K_XL-00007-of-00007.gguf",
+          "size": 84482513692,
+          "header_hex": "474755460300000001000000000000000300000000000000080000000000000073706c69742e6e6f0200000006000b0000000000000073706c69742e636f756e74020000000700130000000000000073706c69742e74656e736f72732e636f756e7405000000130400001b000000000000007065725f6c617965725f746f6b656e5f656d62642e7765696768740200000000010000000000004219c72d000000000b000000000000000000000000000000000000000000000000000000000000"
+        }
+      ],
+      "source_tables": [
+        {
+          "path": "UD-Q2_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q2_K_XL-00007-of-00007.gguf",
+          "size": 135172021792,
+          "sha256": "a653c5309b7c74a6c41580aaa8c2d2bbdae0342253bca2cd3fc9e69d05f3d0eb",
+          "type": 13
+        }
+      ],
+      "original_bytes": 334793544895,
+      "main_bytes": 284104036795,
+      "group": "u7of7",
+      "already_released": false,
+      "runtime_repo": "danielhanchen/llama.cpp",
+      "runtime_revision": "b72050d03ae14bb3cb5138ecefab3f3f65157d31"
+    },
+    {
+      "kind": "unsloth",
+      "variant": "UD-Q3_K_XL",
+      "repo": "webmp3/Sakura-DeepSeek-V4.1-Flash-1017-Unsloth-UD-Q3_K_XL-Engram-Q3_K-GGUF",
+      "source_repo": "unsloth/DeepSeek-V4.1-Flash-1017-GGUF",
+      "source_revision": "60ad3651641b5c97679c807e064ab1d7a3ca1455",
+      "backbone": [
+        {
+          "path": "UD-Q3_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q3_K_XL-00001-of-00008.gguf",
+          "size": 5780927,
+          "sha256": "427a6be72b502c52562b1f1f7c5c764cad2a4cb3af991e9aaf02a33d958cc322"
+        },
+        {
+          "path": "UD-Q3_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q3_K_XL-00002-of-00008.gguf",
+          "size": 48856795552,
+          "sha256": "9a3500224d10ca5565f010f57154f5b1999406c9453d86e4a0903a8183503697"
+        },
+        {
+          "path": "UD-Q3_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q3_K_XL-00003-of-00008.gguf",
+          "size": 48089732928,
+          "sha256": "ba5c295631a392c7f929a14b633f6c9badc0eb1c9d719ecad92ec43efd4ddc6d"
+        },
+        {
+          "path": "UD-Q3_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q3_K_XL-00004-of-00008.gguf",
+          "size": 49795067616,
+          "sha256": "4dd4ea5d34219cd1444218352def2977dd153739853464154a3936276f31ffbb"
+        },
+        {
+          "path": "UD-Q3_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q3_K_XL-00005-of-00008.gguf",
+          "size": 49964720992,
+          "sha256": "1a733e505a723fb1a5ccc15a45547c6d42097d8830d8fa4c4d17ca7bbb580855"
+        },
+        {
+          "path": "UD-Q3_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q3_K_XL-00006-of-00008.gguf",
+          "size": 49332666816,
+          "sha256": "0592a53ddba5a57062e266116bae26e9f1a97c268acb5287c8f4be5bb1741314"
+        },
+        {
+          "path": "UD-Q3_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q3_K_XL-00007-of-00008.gguf",
+          "size": 36265841792,
+          "sha256": "e6e8dd016ffbb2820f0e6a37f4f8a531f5365fbdd009e758dda1c054453f9ffc"
+        }
+      ],
+      "tables": [
+        {
+          "path": "UD-Q3_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q3_K_XL-00008-of-00008.gguf",
+          "size": 84482513692,
+          "header_hex": "474755460300000001000000000000000300000000000000080000000000000073706c69742e6e6f0200000007000b0000000000000073706c69742e636f756e74020000000800130000000000000073706c69742e74656e736f72732e636f756e7405000000130400001b000000000000007065725f6c617965725f746f6b656e5f656d62642e7765696768740200000000010000000000004219c72d000000000b000000000000000000000000000000000000000000000000000000000000"
+        }
+      ],
+      "source_tables": [
+        {
+          "path": "UD-Q3_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q3_K_XL-00008-of-00008.gguf",
+          "size": 202758032592,
+          "sha256": "18ddc73eea11981cb6317c6d3c4a4e58ec71baaea2de41b071d9127bc15c2a94",
+          "type": 43
+        }
+      ],
+      "original_bytes": 485068639215,
+      "main_bytes": 366793120315,
+      "group": "u8of8",
+      "already_released": false,
+      "runtime_repo": "danielhanchen/llama.cpp",
+      "runtime_revision": "b72050d03ae14bb3cb5138ecefab3f3f65157d31"
+    },
+    {
+      "kind": "unsloth",
+      "variant": "UD-Q4_K_XL",
+      "repo": "webmp3/Sakura-DeepSeek-V4.1-Flash-1017-Unsloth-UD-Q4_K_XL-Engram-Q3_K-GGUF",
+      "source_repo": "unsloth/DeepSeek-V4.1-Flash-1017-GGUF",
+      "source_revision": "60ad3651641b5c97679c807e064ab1d7a3ca1455",
+      "backbone": [
+        {
+          "path": "UD-Q4_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q4_K_XL-00001-of-00009.gguf",
+          "size": 5780589,
+          "sha256": "cc15d470afcb030558bbc4d8e2ccd840182e2e95de1a95198138efe63a5fd99f"
+        },
+        {
+          "path": "UD-Q4_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q4_K_XL-00002-of-00009.gguf",
+          "size": 48129640000,
+          "sha256": "17df217d8fc26a39f21ea40805dc6ab788c7ce8623a59a95c431051df7eafc94"
+        },
+        {
+          "path": "UD-Q4_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q4_K_XL-00003-of-00009.gguf",
+          "size": 48129640000,
+          "sha256": "0c8065f620a049cb437024c54ff12c314c94603a1cc683f5191be4689d6d6d3b"
+        },
+        {
+          "path": "UD-Q4_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q4_K_XL-00004-of-00009.gguf",
+          "size": 48129640000,
+          "sha256": "3bd8b2ebf8f51d8708a73ae0895f8d4acc7e4c983ba4e89d038492b203cc89ac"
+        },
+        {
+          "path": "UD-Q4_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q4_K_XL-00005-of-00009.gguf",
+          "size": 48129640000,
+          "sha256": "929054a6bbf3701765779b58c37988b6c6284a3b8413901858b59c0e95f37cc3"
+        },
+        {
+          "path": "UD-Q4_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q4_K_XL-00006-of-00009.gguf",
+          "size": 48129640000,
+          "sha256": "49d3de04bd6a09de786c9ef7db900eae02ee9fd391573f91a923013d7d5b24d3"
+        },
+        {
+          "path": "UD-Q4_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q4_K_XL-00007-of-00009.gguf",
+          "size": 48129640000,
+          "sha256": "f18feae5878dd680f1ea87ecd1d84f4fb098480298b25a3162dcbdab8dc2ca5b"
+        },
+        {
+          "path": "UD-Q4_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q4_K_XL-00009-of-00009.gguf",
+          "size": 9165923392,
+          "sha256": "c21ad6105a780bc2f44eb7dd41f9b1a1efb4e8ec87618f60b733bc2652bd2ffe"
+        }
+      ],
+      "tables": [
+        {
+          "path": "UD-Q4_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q4_K_XL-00008-of-00009.gguf",
+          "size": 84482513692,
+          "header_hex": "474755460300000001000000000000000300000000000000080000000000000073706c69742e6e6f0200000007000b0000000000000073706c69742e636f756e74020000000900130000000000000073706c69742e74656e736f72732e636f756e7405000000130400001b000000000000007065725f6c617965725f746f6b656e5f656d62642e7765696768740200000000010000000000004219c72d000000000b000000000000000000000000000000000000000000000000000000000000"
+        }
+      ],
+      "source_tables": [
+        {
+          "path": "UD-Q4_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q4_K_XL-00008-of-00009.gguf",
+          "size": 202758032592,
+          "sha256": "12df293355efbd104b088a77e13ee22410fb1ec3f7ab3863947f09896e64bec7",
+          "type": 43
+        }
+      ],
+      "original_bytes": 500707576573,
+      "main_bytes": 382432057673,
+      "group": "u8of9",
+      "already_released": false,
+      "runtime_repo": "danielhanchen/llama.cpp",
+      "runtime_revision": "b72050d03ae14bb3cb5138ecefab3f3f65157d31"
+    },
+    {
+      "kind": "unsloth",
+      "variant": "UD-Q8_K_XL",
+      "repo": "webmp3/Sakura-DeepSeek-V4.1-Flash-1017-Unsloth-UD-Q8_K_XL-Engram-Q3_K-GGUF",
+      "source_repo": "unsloth/DeepSeek-V4.1-Flash-1017-GGUF",
+      "source_revision": "60ad3651641b5c97679c807e064ab1d7a3ca1455",
+      "backbone": [
+        {
+          "path": "UD-Q8_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q8_K_XL-00001-of-00009.gguf",
+          "size": 5780589,
+          "sha256": "cc15d470afcb030558bbc4d8e2ccd840182e2e95de1a95198138efe63a5fd99f"
+        },
+        {
+          "path": "UD-Q8_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q8_K_XL-00002-of-00009.gguf",
+          "size": 50536121984,
+          "sha256": "9cb2047676bd20e448be2377b480080c97fb38fae117f4846e07de2c65bb8522"
+        },
+        {
+          "path": "UD-Q8_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q8_K_XL-00003-of-00009.gguf",
+          "size": 50536121984,
+          "sha256": "17d398dd327e7ff1991b382677814db75d970b074661757564b6f2ac3d0c8d95"
+        },
+        {
+          "path": "UD-Q8_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q8_K_XL-00004-of-00009.gguf",
+          "size": 50536122016,
+          "sha256": "7ea8da1143b9a6bf1424a361eb1b0d6f66c7ce79eac9711162f212cc4f39c319"
+        },
+        {
+          "path": "UD-Q8_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q8_K_XL-00005-of-00009.gguf",
+          "size": 50536122016,
+          "sha256": "1952da19a841176b46f9681c99ea57c674f8a8861e16d76fb35cec4befe039b2"
+        },
+        {
+          "path": "UD-Q8_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q8_K_XL-00006-of-00009.gguf",
+          "size": 50536122016,
+          "sha256": "d6711781d8effab79b410af9c40920bffcc0c28976e509bc1227ff0c6669c33a"
+        },
+        {
+          "path": "UD-Q8_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q8_K_XL-00007-of-00009.gguf",
+          "size": 36097230048,
+          "sha256": "2ebc8d198d03a14865e8a85df637285ceb5dd79b1ffc78424bd3c3e06df57823"
+        },
+        {
+          "path": "UD-Q8_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q8_K_XL-00009-of-00009.gguf",
+          "size": 16835109952,
+          "sha256": "df33722d1dcf5ffe0347ed8406f7acb3b18061f4ded2c13c2b0a184b8d41c9ea"
+        }
+      ],
+      "tables": [
+        {
+          "path": "UD-Q8_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q8_K_XL-00008-of-00009.gguf",
+          "size": 84482513692,
+          "header_hex": "474755460300000001000000000000000300000000000000080000000000000073706c69742e6e6f0200000007000b0000000000000073706c69742e636f756e74020000000900130000000000000073706c69742e74656e736f72732e636f756e7405000000130400001b000000000000007065725f6c617965725f746f6b656e5f656d62642e7765696768740200000000010000000000004219c72d000000000b000000000000000000000000000000000000000000000000000000000000"
+        }
+      ],
+      "source_tables": [
+        {
+          "path": "UD-Q8_K_XL/DeepSeek-V4.1-Flash-1017-UD-Q8_K_XL-00008-of-00009.gguf",
+          "size": 202758032592,
+          "sha256": "12df293355efbd104b088a77e13ee22410fb1ec3f7ab3863947f09896e64bec7",
+          "type": 43
+        }
+      ],
+      "original_bytes": 508376763197,
+      "main_bytes": 390101244297,
+      "group": "u8of9",
+      "already_released": false,
+      "runtime_repo": "danielhanchen/llama.cpp",
+      "runtime_revision": "b72050d03ae14bb3cb5138ecefab3f3f65157d31"
+    },
+    {
+      "kind": "maya",
+      "variant": "Maya-XS-IQ1_S",
+      "repo": "webmp3/Sakura-DeepSeek-V4.1-Flash-1017-Maya-XS-Engram-Q3_K-GGUF",
+      "source_repo": "peasantsmith/DeepSeek-V4.1-Flash-1017-Maya-GGUF",
+      "source_revision": "c273fcbdda76a1db074c2f414cb70edbfca2f2ef",
+      "backbone": [
+        {
+          "path": "Maya-XS/DeepSeek-V4.1-Flash-1017-Maya-XS-IQ1_S-00001-of-00005.gguf",
+          "size": 47781530400,
+          "sha256": "a0cb7966afd68bc35c46f78018d1fa1d2e4bcbe3c3baf39f60cd1733ed9ad7e5"
+        },
+        {
+          "path": "Maya-XS/DeepSeek-V4.1-Flash-1017-Maya-XS-IQ1_S-00002-of-00005.gguf",
+          "size": 47775748128,
+          "sha256": "ba5afb43adfc667436ebcfbd82d25411fa2843ee7e1d877290611cd60f93cca1"
+        },
+        {
+          "path": "Maya-XS/DeepSeek-V4.1-Flash-1017-Maya-XS-IQ1_S-00003-of-00005.gguf",
+          "size": 19784230848,
+          "sha256": "1482443bb4957c8d2f005ded365445f98558ff05c50674f9ee9a96ddabc122a4"
+        }
+      ],
+      "tables": [
+        {
+          "path": "Maya-XS/DeepSeek-V4.1-Flash-1017-Maya-XS-IQ1_S-00004-of-00005.gguf",
+          "size": 42240678672,
+          "header_hex": "474755460300000001000000000000000300000000000000080000000000000073706c69742e6e6f0200000003000b0000000000000073706c69742e636f756e74020000000500130000000000000073706c69742e74656e736f72732e636f756e7405000000140400001800000000000000626c6b2e312e656e6772616d5f656d62642e7765696768740200000000010000000000001878e316000000000b000000000000000000000000000000000000000000000000000000000000000000"
+        },
+        {
+          "path": "Maya-XS/DeepSeek-V4.1-Flash-1017-Maya-XS-IQ1_S-00005-of-00005.gguf",
+          "size": 42241835212,
+          "header_hex": "474755460300000001000000000000000300000000000000080000000000000073706c69742e6e6f0200000004000b0000000000000073706c69742e636f756e74020000000500130000000000000073706c69742e74656e736f72732e636f756e7405000000140400001900000000000000626c6b2e31342e656e6772616d5f656d62642e7765696768740200000000010000000000002aa1e316000000000b0000000000000000000000000000000000000000000000000000000000000000"
+        }
+      ],
+      "source_tables": [
+        {
+          "path": "Maya-XS/DeepSeek-V4.1-Flash-1017-Maya-XS-IQ1_S-00004-of-00005.gguf",
+          "size": 80641295472,
+          "sha256": "0d93315942c523d82f6dbc0a6e0e1751548e309f3963f96b82f92e8f9bc52e36",
+          "type": 14
+        },
+        {
+          "path": "Maya-XS/DeepSeek-V4.1-Flash-1017-Maya-XS-IQ1_S-00005-of-00005.gguf",
+          "size": 80643503412,
+          "sha256": "39bbc8cde8b17604fed9a7ba7fc6bc9c5e72e34733657943ac049b4b9ca2d340",
+          "type": 14
+        }
+      ],
+      "original_bytes": 276626308260,
+      "main_bytes": 199824023260,
+      "group": "maya-xs",
+      "already_released": false,
+      "runtime_repo": "mw00/project-maya",
+      "runtime_revision": "ffe2e5e53fd5254e7f3492a20e8ad2b51b26a197"
+    },
+    {
+      "kind": "maya",
+      "variant": "Maya-S-IQ2_XXS",
+      "repo": "webmp3/Sakura-DeepSeek-V4.1-Flash-1017-Engram-Q3_K-GGUF",
+      "source_repo": "peasantsmith/DeepSeek-V4.1-Flash-1017-Maya-GGUF",
+      "source_revision": "b9e25f34b53806b24e5b18085de6ed5967ad9ed5",
+      "backbone": [
+        {
+          "path": "Maya-S/DeepSeek-V4.1-Flash-1017-Maya-S-IQ2_XXS-00001-of-00006.gguf",
+          "size": 47887697312,
+          "sha256": "1f3437f57042e69f94c141ffbcba0d5610dab63feb07244fb468be4940d6763f"
+        },
+        {
+          "path": "Maya-S/DeepSeek-V4.1-Flash-1017-Maya-S-IQ2_XXS-00002-of-00006.gguf",
+          "size": 47669578400,
+          "sha256": "66501fee8702ffd54e6f065323ab54bb3150d20b10b01922c589e7462c7b5ba6"
+        },
+        {
+          "path": "Maya-S/DeepSeek-V4.1-Flash-1017-Maya-S-IQ2_XXS-00003-of-00006.gguf",
+          "size": 47103347360,
+          "sha256": "3195b23f33337c46a07c48583946d99147c3635412bc4adc6acdc4cf42bf30ad"
+        },
+        {
+          "path": "Maya-S/DeepSeek-V4.1-Flash-1017-Maya-S-IQ2_XXS-00004-of-00006.gguf",
+          "size": 35532532032,
+          "sha256": "d60dba35fac9601cd5c6026439dd980c457a5bb1c009192ea539b220108ea0db"
+        }
+      ],
+      "tables": [
+        {
+          "path": "Maya-S/DeepSeek-V4.1-Flash-1017-Maya-S-IQ2_XXS-00005-of-00006.gguf",
+          "size": 42240678672,
+          "header_hex": "474755460300000001000000000000000300000000000000080000000000000073706c69742e6e6f0200000004000b0000000000000073706c69742e636f756e74020000000600130000000000000073706c69742e74656e736f72732e636f756e7405000000140400001800000000000000626c6b2e312e656e6772616d5f656d62642e7765696768740200000000010000000000001878e316000000000b000000000000000000000000000000000000000000000000000000000000000000"
+        },
+        {
+          "path": "Maya-S/DeepSeek-V4.1-Flash-1017-Maya-S-IQ2_XXS-00006-of-00006.gguf",
+          "size": 42241835212,
+          "header_hex": "474755460300000001000000000000000300000000000000080000000000000073706c69742e6e6f0200000005000b0000000000000073706c69742e636f756e74020000000600130000000000000073706c69742e74656e736f72732e636f756e7405000000140400001900000000000000626c6b2e31342e656e6772616d5f656d62642e7765696768740200000000010000000000002aa1e316000000000b0000000000000000000000000000000000000000000000000000000000000000"
+        }
+      ],
+      "source_tables": [
+        {
+          "path": "Maya-S/DeepSeek-V4.1-Flash-1017-Maya-S-IQ2_XXS-00005-of-00006.gguf",
+          "size": 80641295472,
+          "blob_id": "cb49ea613f05612a2aacb6598be7139731434066",
+          "sha256": "c98d46f96a25d17c4c54da5a60782c130255c364a22e621ea28d5c98a692ceb2"
+        },
+        {
+          "path": "Maya-S/DeepSeek-V4.1-Flash-1017-Maya-S-IQ2_XXS-00006-of-00006.gguf",
+          "size": 80643503412,
+          "blob_id": "9eb08d1f2b23a62dbf4ddf78dd0d20e432476400",
+          "sha256": "98d65ef4f36e0b193935d44c3586241ca09b1b47e90f118e85332cfdb5860263"
+        }
+      ],
+      "original_bytes": 339477953988,
+      "main_bytes": 262675668988,
+      "group": "existing-maya",
+      "already_released": true,
+      "runtime_repo": "mw00/project-maya",
+      "runtime_revision": "ffe2e5e53fd5254e7f3492a20e8ad2b51b26a197"
+    }
+  ],
+  "overview_repo": "webmp3/Sakura-DeepSeek-V4.1-Flash-1017-Overview",
+  "no_full_inference_test": true
+}

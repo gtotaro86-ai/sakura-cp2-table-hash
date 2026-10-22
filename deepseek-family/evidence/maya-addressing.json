@@ -1,0 +1,14 @@
+{
+  "source_revision": "c273fcbdda76a1db074c2f414cb70edbfca2f2ef",
+  "maya_xs_metadata_sha256": "a0cb7966afd68bc35c46f78018d1fa1d2e4bcbe3c3baf39f60cd1733ed9ad7e5",
+  "maya_s_metadata_sha256": "1f3437f57042e69f94c141ffbcba0d5610dab63feb07244fb468be4940d6763f",
+  "complete_token_map_sha256": "c60a86322ec17b4142bfef3c57a8d81fb428550cdf487f88a4320cb59fe46481",
+  "selected_addressing_metadata_sha256": "bec36e69b0655f8de4c08ffc74ddf0720221da65d445f80e173d460c698b96db",
+  "all_48_bucket_primes_offsets_multipliers_and_full_token_map_equal": true,
+  "Q6_real_sample_rows_equal": 96,
+  "first_three_shards_table_free": true,
+  "total_tensor_count": 1044,
+  "full_original_Q6_payload_identity_proven": false,
+  "execution_context": "Bounded Work-cloud public HTTP ranges; not a GitHub measurement",
+  "full_inference_test_performed": false
+}

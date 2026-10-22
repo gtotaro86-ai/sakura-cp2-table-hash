@@ -1,0 +1,80 @@
+{
+  "repo": "peasantsmith/DeepSeek-V4.1-Flash-1017-Maya-GGUF",
+  "revision": "c273fcbdda76a1db074c2f414cb70edbfca2f2ef",
+  "execution": "ChatGPT Work Linux cloud; no full build",
+  "tables": [
+    {
+      "path": "Maya-XS/DeepSeek-V4.1-Flash-1017-Maya-XS-IQ1_S-00004-of-00005.gguf",
+      "size": 80641295472,
+      "sha256": "0d93315942c523d82f6dbc0a6e0e1751548e309f3963f96b82f92e8f9bc52e36",
+      "header_hex": "474755460300000001000000000000000300000000000000080000000000000073706c69742e6e6f0200000003000b0000000000000073706c69742e636f756e74020000000500130000000000000073706c69742e74656e736f72732e636f756e7405000000140400001800000000000000626c6b2e312e656e6772616d5f656d62642e7765696768740200000000010000000000001878e316000000000e000000000000000000000000000000000000000000000000000000000000000000",
+      "tensor": "blk.1.engram_embd.weight",
+      "rows": 384006168,
+      "type": 14,
+      "split": {
+        "split.no": 3,
+        "split.count": 5,
+        "split.tensors.count": 1044
+      },
+      "samples": [
+        {
+          "row_start": 0,
+          "rows": 16,
+          "sha256": "89cd621e4d8ec49d3539066621bd410a457b058de6e234f3d3e68c4c645f5d81",
+          "identical_to_original_Maya_S_Q6_sample": true
+        },
+        {
+          "row_start": 192003084,
+          "rows": 16,
+          "sha256": "504e0f56f0d715cfe7e12fa21cd53766d9f0c7ea6caac0f00e6234eb28c98cfe",
+          "identical_to_original_Maya_S_Q6_sample": true
+        },
+        {
+          "row_start": 384006152,
+          "rows": 16,
+          "sha256": "f26e0c86ea3cfbfb9ef1d3decc32cf4f008024d8de8bfe59f91d1d4a66324023",
+          "identical_to_original_Maya_S_Q6_sample": true
+        }
+      ]
+    },
+    {
+      "path": "Maya-XS/DeepSeek-V4.1-Flash-1017-Maya-XS-IQ1_S-00005-of-00005.gguf",
+      "size": 80643503412,
+      "sha256": "39bbc8cde8b17604fed9a7ba7fc6bc9c5e72e34733657943ac049b4b9ca2d340",
+      "header_hex": "474755460300000001000000000000000300000000000000080000000000000073706c69742e6e6f0200000004000b0000000000000073706c69742e636f756e74020000000500130000000000000073706c69742e74656e736f72732e636f756e7405000000140400001900000000000000626c6b2e31342e656e6772616d5f656d62642e7765696768740200000000010000000000002aa1e316000000000e0000000000000000000000000000000000000000000000000000000000000000",
+      "tensor": "blk.14.engram_embd.weight",
+      "rows": 384016682,
+      "type": 14,
+      "split": {
+        "split.no": 4,
+        "split.count": 5,
+        "split.tensors.count": 1044
+      },
+      "samples": [
+        {
+          "row_start": 0,
+          "rows": 16,
+          "sha256": "d9ef593e79b39efce0523d7b5875bbbb3b3211774e5eaed1957010bd953f6d75",
+          "identical_to_original_Maya_S_Q6_sample": true
+        },
+        {
+          "row_start": 192008341,
+          "rows": 16,
+          "sha256": "949930d8d7ff4f9f32ea13ccbdef28ec2332ed0a33753b3f711070b506bf1a67",
+          "identical_to_original_Maya_S_Q6_sample": true
+        },
+        {
+          "row_start": 384016666,
+          "rows": 16,
+          "sha256": "62e485dc2883c767e4b59216f6a8bed8af8300b0f7cc32bbb555f5590a18782b",
+          "identical_to_original_Maya_S_Q6_sample": true
+        }
+      ]
+    }
+  ],
+  "backbone_bytes": 115341509376,
+  "Q3_result_bytes": 199824023260,
+  "new_model_bytes_read": 20544,
+  "full_payload_identity_proven": false,
+  "full_inference_test_performed": false
+}

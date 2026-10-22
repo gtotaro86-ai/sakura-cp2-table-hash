@@ -1,0 +1,11 @@
+{
+  "maya_revision": "ffe2e5e53fd5254e7f3492a20e8ad2b51b26a197",
+  "patch_sha256": "86597a42a6bf37386bad5a71ace0423b50571499575291ff7146f896241098c3",
+  "reference_revision": "c7fc5094179bf8a9c73c18593db714f8da41a402",
+  "real_rows": 192,
+  "random_rows": 4096,
+  "finite_fp16_scale_rows": 63488,
+  "bit_exact": true,
+  "gpu_executed": false,
+  "full_inference_test_performed": false
+}

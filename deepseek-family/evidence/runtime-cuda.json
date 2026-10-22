@@ -1,0 +1,57 @@
+{
+  "cuda_compiler": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2025 NVIDIA Corporation\nBuilt on Wed_Aug_20_01:58:59_PM_PDT_2025\nCuda compilation tools, release 13.0, V13.0.88\nBuild cuda_13.0.r13.0/compiler.36424714_0\n",
+  "maya_revision": "ffe2e5e53fd5254e7f3492a20e8ad2b51b26a197 plus Sakura patch",
+  "cuda_translation_units_compiled": true,
+  "iq1_translation_units_compiled": true,
+  "execution_context": "ChatGPT Work Linux cloud CPU compiler; no GPU execution; not a GitHub runner measurement",
+  "gpu_test_linked": true,
+  "full_maya_executable_linked": false,
+  "gpu_executed": false,
+  "hip_compiled": false,
+  "windows_build": false,
+  "model_inference_tested": false,
+  "results": [
+    {
+      "stage": 0,
+      "returncode": 0,
+      "seconds": 27.646787782000047
+    },
+    {
+      "stage": 1,
+      "returncode": 0,
+      "seconds": 2.477393946999655
+    },
+    {
+      "stage": 2,
+      "returncode": 0,
+      "seconds": 32.798253568999826
+    },
+    {
+      "stage": 3,
+      "returncode": 0,
+      "seconds": 0.7649552470002163
+    },
+    {
+      "stage": 4,
+      "returncode": 0,
+      "seconds": 71.71935980900025
+    },
+    {
+      "stage": 5,
+      "returncode": 0,
+      "seconds": 1.4528917689999616
+    },
+    {
+      "stage": 6,
+      "returncode": 0,
+      "seconds": 0.2187037059998147
+    }
+  ],
+  "patch_sha256": "86597a42a6bf37386bad5a71ace0423b50571499575291ff7146f896241098c3",
+  "source_sha256": {
+    "src/ds4/ds4_model.cu": "658fd0ca8b102dcc6cc0f9663c732ad71a17ee7369f5a524f9b838f914e57a69",
+    "src/ds4/ds4_kernels.cu": "9d14a985bbce12381d0add583306492a18a4f100a99202301f8c29136c19c992",
+    "src/ds4/ds4_q3k.cuh": "1ba4429a58bcfb92a7042560882644b36544d489a83d123d825f7a694f6f2abc",
+    "tests/sakura_engram_q3_test.cu": "3ba7f5d2b19079c2c67926bd02654e32c7e7123e2855180a5d8f815058c9537d"
+  }
+}

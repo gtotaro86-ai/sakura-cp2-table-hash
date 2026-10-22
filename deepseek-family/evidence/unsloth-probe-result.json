@@ -1,0 +1,80 @@
+{
+  "execution_context": "ChatGPT Work cloud Linux CPU; not GitHub Actions",
+  "source_repo": "unsloth/DeepSeek-V4.1-Flash-1017-GGUF",
+  "source_revision": "60ad3651641b5c97679c807e064ab1d7a3ca1455",
+  "metadata_sha256": "b843148a82de2b24df0c5a656669edbb9212eb69a41953249fe6c50d04186177",
+  "metadata_only_shard": true,
+  "header_sha256": "6bd04a8a531e90206ff3780eda4f3f2aa809e26712b6968238e33b90005e045b",
+  "rows": [
+    384006168,
+    384016682
+  ],
+  "combined_rows": 768022850,
+  "combined_file_bytes": 84482513692,
+  "samples": [
+    {
+      "layer_id": 1,
+      "row_start": 0,
+      "combined_row_start": 0,
+      "rows": 32,
+      "q6_bytes_identical": true,
+      "q6_relative_difference": 0.0,
+      "q3_sha256": "2e0fc9f6978175fef3040e838fe0bbb41aa6b7f62e751d1ebc2588220575098a",
+      "q3_rrmse_vs_unsloth_q6": 0.1512080430984497
+    },
+    {
+      "layer_id": 1,
+      "row_start": 192003084,
+      "combined_row_start": 192003084,
+      "rows": 32,
+      "q6_bytes_identical": true,
+      "q6_relative_difference": 0.0,
+      "q3_sha256": "2ae3168b076cad2ad336ca90a7ddb360d057aff41c172ceb914d71a1241ba6e3",
+      "q3_rrmse_vs_unsloth_q6": 0.15206001698970795
+    },
+    {
+      "layer_id": 1,
+      "row_start": 384006136,
+      "combined_row_start": 384006136,
+      "rows": 32,
+      "q6_bytes_identical": true,
+      "q6_relative_difference": 0.0,
+      "q3_sha256": "91699fc89f4d85ffb6840f87f512e7be2ce78ed0c41bd39a42afc308d82447fd",
+      "q3_rrmse_vs_unsloth_q6": 0.1527661383152008
+    },
+    {
+      "layer_id": 14,
+      "row_start": 0,
+      "combined_row_start": 384006168,
+      "rows": 32,
+      "q6_bytes_identical": true,
+      "q6_relative_difference": 0.0,
+      "q3_sha256": "a5c1e9238f6c5f9c300984358d8a18abf8b10cfd237c3f675cf04f53fe1a0190",
+      "q3_rrmse_vs_unsloth_q6": 0.15210674703121185
+    },
+    {
+      "layer_id": 14,
+      "row_start": 192008341,
+      "combined_row_start": 576014509,
+      "rows": 32,
+      "q6_bytes_identical": true,
+      "q6_relative_difference": 0.0,
+      "q3_sha256": "7bb0f4e32413026bc7a67a97377701c3db800d2219e8bbec75a0096ade355cea",
+      "q3_rrmse_vs_unsloth_q6": 0.15231619775295258
+    },
+    {
+      "layer_id": 14,
+      "row_start": 384016650,
+      "combined_row_start": 768022818,
+      "rows": 32,
+      "q6_bytes_identical": true,
+      "q6_relative_difference": 0.0,
+      "q3_sha256": "5e4595eecd5f014eafdef95b04584fee76ea813df733f9c70a8a1e5f0e19c4fb",
+      "q3_rrmse_vs_unsloth_q6": 0.15332694351673126
+    }
+  ],
+  "full_payload_identity_proven": false,
+  "full_inference_test_performed": false,
+  "addressing_matches_pinned_converter": true,
+  "native_host_gather_commit": "b72050d03ae14bb3cb5138ecefab3f3f65157d31"
+}

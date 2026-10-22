@@ -1,0 +1,312 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -477,6 +477,10 @@
+                                  src/ds4/ds4_host_ar.cpp)
+     target_include_directories(ds4_gguf_test PRIVATE ${_strata_gpu_include_directories} third_party/ggml)
+     target_link_libraries(ds4_gguf_test PRIVATE strata_kernels_cpu ${_strata_gpu_runtime_target})
++    # Sakura Q3 Engram: compile both actual device entry points; no model required.
++    add_executable(sakura_engram_q3_test tests/sakura_engram_q3_test.cu src/ds4/ds4_kernels.cu src/ds4/ds4_host_ar.cpp)
++    target_include_directories(sakura_engram_q3_test PRIVATE ${_strata_gpu_include_directories})
++    target_link_libraries(sakura_engram_q3_test PRIVATE ${_strata_gpu_runtime_target})
+   endif()
+ 
+   if(STRATA_ENABLE_HIP)
+--- a/src/ds4/ds4_kernels.cu
++++ b/src/ds4/ds4_kernels.cu
+@@ -3,6 +3,7 @@
+ #include "ds4_kernels.cuh"
+ #include "ds4_numerics.cuh"
+ #include "ds4_q6k.cuh"
++#include "ds4_q3k.cuh"
+ #include "ds4_pool.hpp"
+ 
+ #include <cuda_fp16.h>
+@@ -1932,11 +1933,16 @@
+ 
+ // ---------------------------------------------------------------- engram
+ __global__ void engram_dequant_kernel(const uint8_t* __restrict__ rows, const uint8_t* __restrict__ scales, int hd,
+-                                      float* __restrict__ out, bool q6k) {
++                                      float* __restrict__ out, int format) {
+     const int r = blockIdx.x;
+-    if (q6k) {   // (ggml Q6_K superblocks at the row's start)
++    if (format == kEngramQ6K) {   // (ggml Q6_K superblocks at the row's start)
+         for (int e = threadIdx.x; e < hd; e += blockDim.x)
+             out[(size_t) r * hd + e] = q6k_value(rows + (size_t) r * hd + (size_t) (e / 256) * kQ6kBytes, e % 256);
++        return;
++    }
++    if (format == kEngramQ3K) {
++        for (int e = threadIdx.x; e < hd; e += blockDim.x)
++            out[(size_t) r * hd + e] = q3k_value(rows + (size_t) r * hd + (size_t) (e / 256) * kQ3kBytes, e % 256);
+         return;
+     }
+     for (int e = threadIdx.x; e < hd; e += blockDim.x) {
+@@ -2429,13 +2435,18 @@
+ }
+ 
+ __global__ void engram_dequant_tok_kernel(const uint8_t* __restrict__ src, size_t per, int cols, int hd,
+-                                          float* __restrict__ out, bool q6k) {
++                                          float* __restrict__ out, int format) {
+     const int r = blockIdx.x, t = r / cols, c = r - t * cols;
+     const uint8_t* rows = src + (size_t) t * per + (size_t) c * hd;
+     const uint8_t* scales = src + (size_t) t * per + (size_t) cols * hd + (size_t) c * (hd / 32);
+-    if (q6k) {   // (ggml Q6_K superblocks at the row's start)
++    if (format == kEngramQ6K) {   // (ggml Q6_K superblocks at the row's start)
+         for (int e = threadIdx.x; e < hd; e += blockDim.x)
+             out[(size_t) r * hd + e] = q6k_value(rows + (size_t) (e / 256) * kQ6kBytes, e % 256);
++        return;
++    }
++    if (format == kEngramQ3K) {
++        for (int e = threadIdx.x; e < hd; e += blockDim.x)
++            out[(size_t) r * hd + e] = q3k_value(rows + (size_t) (e / 256) * kQ3kBytes, e % 256);
+         return;
+     }
+     for (int e = threadIdx.x; e < hd; e += blockDim.x) {
+@@ -2570,8 +2581,8 @@
+ void hc_mix_scale(const float* h, int hcdim, int n_mix, int T, float eps, float* mixes, cudaStream_t s) {
+     hc_mix_scale_kernel<<<T, kThreads, 0, s>>>(h, hcdim, n_mix, eps, mixes);
+ }
+-void engram_dequant_tok(const uint8_t* src, size_t per, int cols, int T, int hd, float* out, cudaStream_t s, bool q6k) {
+-    if (T > 0) engram_dequant_tok_kernel<<<T * cols, kThreads, 0, s>>>(src, per, cols, hd, out, q6k);
++void engram_dequant_tok(const uint8_t* src, size_t per, int cols, int T, int hd, float* out, cudaStream_t s, int format) {
++    if (T > 0) engram_dequant_tok_kernel<<<T * cols, kThreads, 0, s>>>(src, per, cols, hd, out, format);
+ }
+ void moe_sort(const int* idx, int T, int k, const int* vs, int n_vs, int* bounds, int* row_tok, int* pos,
+               cudaStream_t s) {
+@@ -2870,8 +2881,8 @@
+     confidence_kernel<<<T, 1024, 0, s>>>(x, E, tok, w, dim, R, out);
+ }
+ 
+-void engram_dequant(const uint8_t* rows, const uint8_t* scales, int n, int hd, float* out, cudaStream_t s, bool q6k) {
+-    engram_dequant_kernel<<<n, kThreads, 0, s>>>(rows, scales, hd, out, q6k);
++void engram_dequant(const uint8_t* rows, const uint8_t* scales, int n, int hd, float* out, cudaStream_t s, int format) {
++    engram_dequant_kernel<<<n, kThreads, 0, s>>>(rows, scales, hd, out, format);
+ }
+ 
+ void engram_gate(float* h, const float* kv, const float* w, int hc, int dim, int T, float eps, cudaStream_t s) {
+--- a/src/ds4/ds4_kernels.cuh
++++ b/src/ds4/ds4_kernels.cuh
+@@ -7,6 +7,7 @@
+ // known on the host and passed by value.
+ #pragma once
+ 
++#include "ds4_engram_format.hpp"
+ #include <cstddef>
+ #include <cstdint>
+ #include <cuda_runtime.h>
+@@ -215,12 +216,12 @@
+ 
+ /// Engram.  rows: n FP8 E4M3 rows of hd values, scales n x (hd / 32) E8M0 -> out F32 [n * hd].  q6k: the rows are
+ /// ggml Q6_K superblocks instead (hd / 256 of them, 210 bytes each, at the start of each row's hd bytes; no scales),
+-/// decoded as ggml's dequantize_row_q6_K.
+-void engram_dequant(const uint8_t* rows, const uint8_t* scales, int n, int hd, float* out, cudaStream_t s, bool q6k = false);
++/// decoded as ggml's dequantize_row_q6_K. Q3_K: 110-byte blocks in the same padded hd-byte slots.
++void engram_dequant(const uint8_t* rows, const uint8_t* scales, int n, int hd, float* out, cudaStream_t s, int format = kEngramFp8);
+ /// The same over the host's per-token layout (a chunk): token t's cols rows, then their scales, `per` bytes a token;
+ /// T tokens -> out F32 [T * cols][hd].
+ void engram_dequant_tok(const uint8_t* src, size_t per, int cols, int T, int hd, float* out, cudaStream_t s,
+-                        bool q6k = false);
++                        int format = kEngramFp8);
+ /// h[t][k] += gate[t][k] * value[t] with the gate from the normalized dot of h[t][k] * w[k] * key[t][k]
+ /// (kv[t] = [key hc x dim | value dim]).
+ void engram_gate(float* h, const float* kv, const float* w, int hc, int dim, int T, float eps, cudaStream_t s);
+--- a/src/ds4/ds4_model.cu
++++ b/src/ds4/ds4_model.cu
+@@ -1100,7 +1100,7 @@
+     EgRowCache eg_cache;
+     std::mutex eg_cache_mu;
+     std::vector<std::unique_ptr<EgBatch>> eg_win;
+-    std::vector<uint8_t> eg_q6k;   // Engram layer li's table in ggml Q6_K (a row one superblock a 256 values), else FP8
++    std::vector<int> eg_format;   // Explicit FP8/Q6_K/Q3_K Engram decoder dispatch
+     std::atomic<int64_t> eg_rows_n{0}, eg_hits_n{0}, eg_reads_n{0}, eg_wait_ns{0}, eg_io_ns{0};
+     uint16_t* h_emb = nullptr;        // the window's embedding rows
+     std::vector<float> c_xh, c_xsb, c_acc, c_xhd, c_xsd, c_accd, c_yd;
+@@ -2905,13 +2905,38 @@
+             for (int li = 0; li < pk.eg_layers; ++li) {
+                 eg_win.emplace_back(new EgBatch());
+                 const Tensor* tw = pk.get("layers." + std::to_string(g.eg_layers[(size_t) li]) + ".engram.embed.weight");
+-                const bool q6k = tw != nullptr && tw->dtype == "Q6_K";
+-                if (q6k && pk.eg_hd % 256 != 0) {
+-                    err = "Engram layer " + std::to_string(g.eg_layers[(size_t) li]) + ": Q6_K rows of " +
++                if (tw == nullptr) { err = "Missing Engram weight"; return false; }
++                if (tw->dtype != "Q6_K" && tw->dtype != "Q3_K" && tw->dtype != "MXFP8" && tw->dtype != "F8_E4M3") {
++                    err = "Unsupported Engram dtype: " + tw->dtype; return false;
++                }
++                const int format = tw->dtype == "Q6_K" ? kEngramQ6K : tw->dtype == "Q3_K" ? kEngramQ3K : kEngramFp8;
++                if (format != kEngramFp8 && pk.eg_hd % 256 != 0) {
++                    err = "Engram layer " + std::to_string(g.eg_layers[(size_t) li]) + ": K-quant rows of " +
+                           std::to_string(pk.eg_hd) + " values (not whole superblocks of 256)";
+                     return false;
+                 }
+-                eg_q6k.push_back(q6k ? 1 : 0);
++                if (format == kEngramFp8 && tw->dtype != "MXFP8") {
++                    const Tensor* ts = pk.get("layers." + std::to_string(g.eg_layers[(size_t) li]) + ".engram.embed.scale");
++                    if (ts == nullptr) { err = "Missing FP8 Engram scales"; return false; }
++                }
++                if (format != kEngramFp8) {
++                    if (tw->shape.size() != 2 || tw->shape[0] <= 0 || tw->shape[1] != pk.eg_hd ||
++                        !engram_qk_layout_valid(format, pk.eg_hd, (uint64_t) tw->shape[0], tw->bytes) ||
++                        tw->file < 0 || (size_t) tw->file >= pk.fds.size() ||
++                        !engram_range_valid(tw->off, tw->bytes, os::file_size(pk.fds[(size_t) tw->file]))) {
++                        err = "Invalid Engram K-quant shape, payload size or file range";
++                        return false;
++                    }
++                    for (int c = 0; c < cols; ++c) {
++                        const size_t k = (size_t) li * cols + c;
++                        if (pk.eg_primes[k] <= 0 || pk.eg_off[k] < 0 ||
++                            pk.eg_off[k] > tw->shape[0] || pk.eg_primes[k] > tw->shape[0] - pk.eg_off[k]) {
++                            err = "Engram hash bucket extends outside K-quant table";
++                            return false;
++                        }
++                    }
++                }
++                eg_format.push_back(format);
+             }
+             if (o.verbose)
+                 std::fprintf(stderr, "ds4: Engram rows read on %d threads, issued with the tokens, collected before "
+@@ -5543,7 +5568,7 @@
+         const Tensor* tw = pk.get(P + "weight");
+         const Tensor* ts = pk.get(P + "scale");
+         const bool mx8 = tw->dtype == "MXFP8";   // (a GGUF: the scales between the codes, one per 32)
+-        const bool q6k = eg_q6k[(size_t) li] != 0;   // (a GGUF: one Q6_K superblock a 256 values, its scales inside)
++        const int format = eg_format[(size_t) li];   // Q3_K: 110 bytes per 256; Q6_K: 210
+         std::unordered_map<uint64_t, int> first;   // a row this batch reads already -> its read
+         int64_t hits = 0;
+         {
+@@ -5593,8 +5618,8 @@
+                             r.mx8 = true;
+                             r.n = (uint32_t) (hd / 32 * 33);
+                             r.off = tw->off + (uint64_t) id * r.n;
+-                        } else if (q6k) {   // (into the row's code bytes; its scale bytes unused)
+-                            r.n = (uint32_t) (hd / 256 * 210);
++                        } else if (format == kEngramQ6K || format == kEngramQ3K) { // codes padded in existing hd-byte slot
++                            r.n = (uint32_t) (hd / 256 * (format == kEngramQ3K ? 110 : 210));
+                             r.off = tw->off + (uint64_t) id * r.n;
+                         } else {
+                             r.n = (uint32_t) hd;
+@@ -8237,7 +8262,7 @@
+             CK(cudaEventRecord(c.eg_ev[slot], s));
+             for (int s0 = 0; s0 < T; s0 += 256) {
+                 const int ns = std::min(256, T - s0);
+-                engram_dequant_tok(c.eg_rows + (size_t) s0 * per, per, cols, ns, ehd, c.eg_x, s, eg_q6k[(size_t) l.eg] != 0);
++                engram_dequant_tok(c.eg_rows + (size_t) s0 * per, per, cols, ns, ehd, c.eg_x, s, eg_format[(size_t) l.eg]);
+                 x3::rows_f16(c.eg_x, cols * ehd, nullptr, ns, cols * ehd, c.eg_x16, s);
+                 if (!gemm(d, c, l.eg_wkv, c.eg_x16, cols * ehd, ns, c.eg_kv, (H + 1) * D, 0.0f, err)) return false;
+                 engram_gate(c.h + (size_t) s0 * H * D, c.eg_kv, l.eg_w, H, D, ns, g.eps, s);
+@@ -10243,7 +10268,7 @@
+             for (int t = 0; t < T; ++t)
+                 CK(cudaMemcpyAsync(sc + (size_t) t * cols * (ehd / 32), src + (size_t) t * per + (size_t) cols * ehd,
+                                    (size_t) cols * (ehd / 32), cudaMemcpyHostToDevice, s));
+-            engram_dequant(d.eg_rows, sc, T * cols, ehd, d.eg_x, s, eg_q6k[(size_t) l.eg] != 0);
++            engram_dequant(d.eg_rows, sc, T * cols, ehd, d.eg_x, s, eg_format[(size_t) l.eg]);
+             if (!mv(d, {job(l.eg_wkv, d.eg_x, d.eg_kv, T, (size_t) cols * ehd, (size_t) (H + 1) * D)}, err)) return false;
+             engram_gate(d.h, d.eg_kv, l.eg_w, H, D, T, g.eps, s);
+         }
+--- /dev/null
++++ b/src/ds4/ds4_q3k.cuh
+@@ -0,0 +1,39 @@
++// Scalar Q3_K lookup for one 110-byte/256-value ggml block.
++// Layout/reference: llama.cpp c7fc5094179bf8a9c73c18593db714f8da41a402,
++// ggml/src/ggml-quants.c dequantize_row_q3_K. No type relabelling.
++// This host-testable function is the first step of the Maya Engram port.
++#pragma once
++#include <cstdint>
++#include <cstring>
++
++#if defined(__CUDACC__) || defined(__HIPCC__)
++#include <cuda_fp16.h>
++#define SAKURA_Q3_INLINE __device__ __forceinline__
++#else
++#define SAKURA_Q3_INLINE inline
++#endif
++
++namespace strata::ds4 {
++constexpr int kQ3kBytes = 110;
++SAKURA_Q3_INLINE float q3k_value(const uint8_t* b, int i) {
++    // i is in [0,256), enforced by the caller's block loop.
++    const int group = i >> 4;
++    const int packed = b[96 + (group & 7)];
++    const int low = group < 8 ? packed & 15 : packed >> 4;
++    const int high = (b[104 + (group & 3)] >> (2 * (group >> 2))) & 3;
++    const int scale = (low | (high << 4)) - 32;
++    const int qlow = (b[32 + (i >> 7) * 32 + (i & 31)] >> (2 * ((i & 127) >> 5))) & 3;
++    const int q = qlow - ((b[i & 31] & (1 << (i >> 5))) ? 0 : 4);
++    const uint16_t bits = uint16_t(b[108]) | (uint16_t(b[109]) << 8);
++#if defined(__CUDACC__) || defined(__HIPCC__)
++    const float d = __half2float(__ushort_as_half(bits));
++    return __fmul_rn(__fmul_rn(d, float(scale)), float(q));
++#else
++    _Float16 half;
++    std::memcpy(&half, &bits, 2);
++    const float d = float(half);
++    return (d * float(scale)) * float(q);
++#endif
++}
++} // namespace strata::ds4
++#undef SAKURA_Q3_INLINE
+--- /dev/null
++++ b/src/ds4/ds4_engram_format.hpp
+@@ -0,0 +1,15 @@
++// Explicit on-disk Engram formats and checked payload geometry.
++#pragma once
++#include <cstdint>
++#include <limits>
++namespace strata::ds4 {
++constexpr int kEngramFp8 = 0, kEngramQ6K = 1, kEngramQ3K = 2;
++inline bool engram_qk_layout_valid(int format, int hd, uint64_t rows, uint64_t bytes) {
++    if ((format!=kEngramQ3K && format!=kEngramQ6K) || hd<=0 || hd%256!=0 || rows==0) return false;
++    const uint64_t stride=uint64_t(hd/256)*(format==kEngramQ3K ? 110u : 210u);
++    return rows<=std::numeric_limits<uint64_t>::max()/stride && rows*stride==bytes;
++}
++inline bool engram_range_valid(uint64_t offset,uint64_t bytes,uint64_t file_bytes) {
++    return offset<=file_bytes && bytes<=file_bytes-offset;
++}
++} // namespace strata::ds4
+--- /dev/null
++++ b/tests/sakura_engram_q3_test.cu
+@@ -0,0 +1,46 @@
++// Test both REAL Maya Engram GPU entry points against ggml-generated fixtures.
++// No model, network, tokens or paid resources. Requires an existing CUDA/HIP GPU.
++#include "../src/ds4/ds4_kernels.cuh"
++#include <cuda_runtime.h>
++#include <algorithm>
++#include <cstring>
++#include <fstream>
++#include <iostream>
++#include <stdexcept>
++#include <vector>
++using namespace strata::ds4;
++static void check(cudaError_t status) { if(status!=cudaSuccess)throw std::runtime_error(cudaGetErrorString(status)); }
++static std::vector<uint8_t> load(const char* path) {
++    std::ifstream f(path,std::ios::binary|std::ios::ate);if(!f)throw std::runtime_error("fixture missing");
++    const auto n=f.tellg();if(n<=0 || n>1024*1024)throw std::runtime_error("fixture size");
++    std::vector<uint8_t> bytes((size_t)n);f.seekg(0);f.read((char*)bytes.data(),n);
++    if(!f)throw std::runtime_error("fixture short read");return bytes;
++}
++int main(int argc,char** argv) {
++    try {
++        if(argc!=3)throw std::runtime_error("usage: sakura_engram_q3_test codes.q3 expected.f32");
++        const auto packed=load(argv[1]),expected=load(argv[2]);
++        if(packed.size()%110 || expected.size()!=packed.size()/110*256*4)throw std::runtime_error("bad fixtures");
++        const int n=(int)(packed.size()/110),hd=256,cols=4;
++        if(n%cols)throw std::runtime_error("fixture row count divisible by four required");
++        const size_t per=cols*(hd+hd/32);
++        for(bool token_layout:{false,true}) {
++            std::vector<uint8_t> padded(token_layout ? (n/cols)*per : n*(hd+hd/32),0xa5);
++            for(int r=0;r<n;++r) {
++                const size_t off=token_layout ? (r/cols)*per+(r%cols)*hd : r*hd;
++                std::memcpy(padded.data()+off,packed.data()+r*110,110);
++            }
++            uint8_t* device=nullptr;float* out=nullptr;
++            check(cudaMalloc((void**)&device,padded.size()));check(cudaMalloc((void**)&out,expected.size()));
++            check(cudaMemcpy(device,padded.data(),padded.size(),cudaMemcpyHostToDevice));
++            if(token_layout)engram_dequant_tok(device,per,cols,n/cols,hd,out,nullptr,kEngramQ3K);
++            else engram_dequant(device,device+n*hd,n,hd,out,nullptr,kEngramQ3K);
++            check(cudaGetLastError());check(cudaDeviceSynchronize());
++            std::vector<uint8_t> got(expected.size());check(cudaMemcpy(got.data(),out,got.size(),cudaMemcpyDeviceToHost));
++            check(cudaFree(out));check(cudaFree(device));
++            if(got!=expected)throw std::runtime_error(token_layout ? "token/chunk GPU mismatch" : "decode GPU mismatch");
++        }
++        std::cout<<"PASS both Maya Q3_K GPU paths bit-exact against supplied ggml fixture\n";
++        return 0;
++    }catch(const std::exception& e){std::cerr<<e.what()<<'\n';return 1;}
++}
