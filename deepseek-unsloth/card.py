@@ -31,7 +31,7 @@ tags:
 
 本仓库保留 Unsloth `{quant}` 的四个模型主体分片，逐字节不变；只将 Engram 查找表替换为 Q3_K。这里的 Q3_K **仅指 Engram 表**，并不表示整个模型都是 3 位。
 
-原始模型为 [DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017)，修订版本 `1bae0e1088993b9b82de08f59de5be5f34e42170`。模型主体直接来自 [{plan['upstream_repo']}](https://huggingface.co/{plan['upstream_repo']})，固定修订版本 `{plan['upstream_revision']}`。
+原始模型为 [DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017)，修订版本 `1bae0e1088993b9b82de08f59de5be5a34e42170`。模型主体直接来自 [{plan['upstream_repo']}](https://huggingface.co/{plan['upstream_repo']})，固定修订版本 `{plan['upstream_revision']}`。
 
 Engram 表来自已完成的 [Sakura Maya-S Q3_K 版本](https://huggingface.co/{plan['q3_source_repo']})，修订版本 `{plan['q3_source_revision']}`。该表由 peasantsmith 的 Maya-S Q6_K 表重新量化为 Q3_K，Maya 输入修订版本为 `b9e25f34b53806b24e5b18085de6ed5967ad9ed5`。本次构建将两层已有 Q3_K 数据按层 1、层 14 的顺序拼接，并生成 Unsloth 所需的单一 GGUF 张量；没有再次量化 Q3_K 数据，也没有从 IQ4_NL 表再次量化。
 
@@ -70,7 +70,7 @@ Engram 表来自已完成的 [Sakura Maya-S Q3_K 版本](https://huggingface.co/
 
 ## Provenance and exact changes
 
-- Original model: [deepseek-ai/DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017), revision `1bae0e1088993b9b82de08f59de5be5f34e42170`.
+- Original model: [deepseek-ai/DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017), revision `1bae0e1088993b9b82de08f59de5be5a34e42170`.
 - Direct backbone source: [{plan['upstream_repo']}](https://huggingface.co/{plan['upstream_repo']}), revision `{plan['upstream_revision']}`, variant `{quant}`. All four backbone files, including the metadata shard, are copied server-side with identical sizes and SHA-256 hashes.
 - Table source: [{plan['q3_source_repo']}](https://huggingface.co/{plan['q3_source_repo']}), revision `{plan['q3_source_revision']}`. Its existing Q3_K payloads were originally quantized from [peasantsmith's Maya-S Q6_K tables](https://huggingface.co/peasantsmith/DeepSeek-V4.1-Flash-1017-Maya-GGUF) at `b9e25f34b53806b24e5b18085de6ed5967ad9ed5`, using GGML `{plan['reference_ggml_revision']}`.
 - This build **repacks the existing Q3_K payloads without changing their bits**, in layer 1 then layer 14 order, into Unsloth's combined `per_layer_token_embd.weight`. It does not requantize the upstream IQ4_NL table or quantize the backbone again.

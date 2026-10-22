@@ -1,0 +1,35 @@
+name: Correct DeepSeek Unsloth card provenance
+on:
+  push:
+    branches: [main]
+    paths: ['deepseek-unsloth/card-update-request.json']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  cards:
+    if: github.event.repository.private == false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      REPO_VISIBILITY: ${{ github.event.repository.visibility }}
+      SAKURA_FREE_STANDARD_RUNNER: ubuntu-24.04
+      HF_HUB_DISABLE_PROGRESS_BARS: '1'
+    defaults:
+      run:
+        working-directory: deepseek-unsloth
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: sha256sum -c CARD_SHA256SUMS
+      - run: python -m pip install huggingface-hub==2.2.0 PyYAML==6.0.3
+      - name: Correct existing READMEs only
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python -u update_cards.py
+      - name: Independently recheck unchanged releases
+        run: python -u verify_release.py --read-public-output-samples

@@ -1,0 +1,5 @@
+{
+  "request": 1,
+  "scope": "Only correct original checkpoint revision in existing English and Chinese READMEs; no weight uploads or copies",
+  "correct_revision": "1bae0e1088993b9b82de08f59de5be5a34e42170"
+}
